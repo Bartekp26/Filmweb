@@ -1,5 +1,4 @@
-﻿using Filmweb.ViewModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Filmweb
+namespace Filmweb.View
 {
     /// <summary>
-    /// Logika interakcji dla klasy MainWindow.xaml
+    /// Logika interakcji dla klasy RegisterView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class RegisterView : UserControl
     {
-        public MainWindow()
+        public RegisterView()
         {
             InitializeComponent();
         }

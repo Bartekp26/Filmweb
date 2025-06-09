@@ -1,0 +1,37 @@
+﻿<UserControl x:Class="Filmweb.View.RegisterView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Filmweb.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid VerticalAlignment="Center" Background="Black">
+        <StackPanel HorizontalAlignment="Center">
+            <TextBlock Text="Rejestracja" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,20"/>
+
+            <TextBlock Text="Imię" Foreground="White"/>
+            <TextBox Width="250"/>
+
+            <TextBlock Text="Nazwisko" Foreground="White"/>
+            <TextBox Width="250"/>
+
+            <TextBlock Text="Login" Foreground="White"/>
+            <TextBox Width="250"/>
+
+            <TextBlock Text="Hasło" Foreground="White"/>
+            <PasswordBox Width="250"/>
+
+            <Button Content="Zarejestruj się" Width="120" Margin="0,10"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBlock Text="Masz konto?" Foreground="White"/>
+                <Button Content="Logowanie"
+                        Background="Red"
+                        Foreground="White"
+                        Padding="5,2"
+                        Command="{Binding ForwardToLoginCommand}"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

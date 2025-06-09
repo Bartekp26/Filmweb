@@ -4,9 +4,32 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Filmweb"
+        xmlns:view="clr-namespace:Filmweb.View"
+        xmlns:vm="clr-namespace:Filmweb.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
+        Title="Filmweb" Height="600" Width="1000" ResizeMode="CanMinimize"
+        Background="Black">
+    
+    <Window.Resources>
+        <vm:MainVM x:Key="MainVM" />
+        <DataTemplate DataType="{x:Type vm:LoginVM}">
+            <view:LoginView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:RegisterVM}">
+            <view:RegisterView />
+        </DataTemplate>
+    </Window.Resources>
+    
+    <Window.DataContext>
+        <vm:MainVM />
+    </Window.DataContext>
+
+    <Grid x:Name="MainGrid">
+        <Border Background="Green" Height="40" VerticalAlignment="Top">
+            <TextBlock Text="Niby-Filmweb" Foreground="White" FontSize="24" FontWeight="Bold" 
+                       VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        </Border>
+
+        <ContentControl Content="{Binding CurrentView}" Margin="0,40,0,0"/>
     </Grid>
 </Window>
