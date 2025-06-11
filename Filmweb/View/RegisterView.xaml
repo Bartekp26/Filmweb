@@ -21,6 +21,9 @@
             <TextBlock Text="Nazwisko" Foreground="White" Margin="0,10,0,0"/>
             <TextBox Width="250"/>
 
+            <TextBlock Text="E-mail" Foreground="White" Margin="0,10,0,0"/>
+            <TextBox Width="250"/>
+
             <TextBlock Text="Login" Foreground="White" Margin="0,10,0,0"/>
             <TextBox Width="250"/>
 
