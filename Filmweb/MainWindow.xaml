@@ -18,6 +18,8 @@
         <DataTemplate DataType="{x:Type vm:RegisterVM}">
             <view:RegisterView />
         </DataTemplate>
+        <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <local:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
     </Window.Resources>
     
     <Window.DataContext>
@@ -25,11 +27,16 @@
     </Window.DataContext>
 
     <Grid x:Name="MainGrid">
-        <Border Background="Green" Height="40" VerticalAlignment="Top">
-            <TextBlock Text="Niby-Filmweb" Foreground="White" FontSize="24" FontWeight="Bold" 
-                       VerticalAlignment="Center" HorizontalAlignment="Center"/>
-        </Border>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <view:TopBarSimple Visibility="{Binding IsLoginOrRegisterView, Converter={StaticResource BoolToVisibilityConverter}}" />
 
-        <ContentControl Content="{Binding CurrentView}"/>
+            <view:TopBarFull Visibility="{Binding IsLoginOrRegisterView, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+        </Grid>
+
+        <ContentControl Content="{Binding CurrentView}" Grid.Row="1"/>
     </Grid>
 </Window>

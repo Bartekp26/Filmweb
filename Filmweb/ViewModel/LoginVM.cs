@@ -15,6 +15,7 @@ namespace Filmweb.ViewModel
         private readonly MainVM _mainVM;
 
         public ICommand SwitchToRegisterCommand => _mainVM.SwitchToRegisterCommand;
+        public ICommand LogInCommand => _mainVM.LogInCommand;
 
         public LoginVM(MainVM mainVM)
         {
