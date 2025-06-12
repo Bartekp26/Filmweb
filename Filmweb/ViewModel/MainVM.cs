@@ -115,8 +115,8 @@ namespace Filmweb.ViewModel
 
         public void ExecuteRegister()
         {
-            
-            CurrentView = _homeView;
+
+
             // po tej rejestracji lub logowaniu takie cos trza jebnac pobierajac te rzeczy z bazy, tak samo przy edycji
             //UserM user = new UserM
             //{
@@ -127,6 +127,7 @@ namespace Filmweb.ViewModel
             //    Password = Password,
             //    JoinDate = JoinDate
             //};
+            CurrentView = _homeView;
         }
 
 

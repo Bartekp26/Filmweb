@@ -26,7 +26,7 @@ namespace Filmweb.ViewModel
             _mainVM = mainVM;
         }
         //cos takiego ale trzeba pobierac dane z formularza, inne zmiennie i w registerView.xaml dowiazania zrobic
-        //public string Validate()
+        //public string ValidateRegister()
         //{
         //    var errors = new List<string>();
 

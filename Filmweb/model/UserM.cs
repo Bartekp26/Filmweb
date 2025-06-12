@@ -16,19 +16,6 @@ namespace Filmweb.Model
         public string Password { get; set; }
         public MovieM FavouriteMovie { get; set; }
         public String FavouriteActor { get; set; }
-    
 
-    public UserM GetUserModel()
-        {
-            return new UserM
-            {
-                FirstName = FirstName,
-                LastName = LastName,
-                Email = Email,
-                Username = Username,
-                Password = Password 
-            };
-        }
-
-    }   
+    }
 }
