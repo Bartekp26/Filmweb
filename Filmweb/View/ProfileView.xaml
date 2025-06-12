@@ -1,0 +1,90 @@
+﻿<UserControl x:Class="Filmweb.View.ProfileView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Filmweb.View"
+             mc:Ignorable="d" 
+             d:DesignHeight="560" d:DesignWidth="1000" Background="Black">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Orientation="Vertical" Grid.Column="0">
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock FontFamily="Segoe MDL2 Assets"
+                               Text="&#xE77B;"
+                               Foreground="White"
+                               FontSize="50"
+                               Margin="0,0,10,0"/>
+                    <TextBlock Text="User_Login"
+                               Foreground="White"
+                               FontSize="40"
+                               FontWeight="Bold"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                    <TextBlock Text="Imię:" Foreground="White" FontWeight="Bold" FontSize="18"/>
+                    <TextBlock Text="User_First_Name" Foreground="White" FontSize="18" Margin="5,0,0,0"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                    <TextBlock Text="Nazwisko:" Foreground="White" FontWeight="Bold" FontSize="18"/>
+                    <TextBlock Text="User_Last_Name" Foreground="White" FontSize="18" Margin="5,0,0,0"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Mail:" Foreground="White" FontWeight="Bold" FontSize="18"/>
+                    <TextBlock Text="User_Mail" Foreground="White" FontSize="18" Margin="5,0,0,0"/>
+                </StackPanel>
+
+                <Rectangle HorizontalAlignment="Left" Height="2" Width="350" Fill="Orange" Margin="0,0,0,10"/>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                    <TextBlock Text="Favourite Film:" Foreground="White" FontWeight="Bold" FontSize="18"/>
+                    <TextBlock Text="User_Fav_Film" Foreground="White" FontSize="18" Margin="5,0,0,0"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                    <TextBlock Text="Favourite Actor:" Foreground="White" FontWeight="Bold" FontSize="18"/>
+                    <TextBlock Text="User_Fav_Actor" Foreground="White" FontSize="18" Margin="5,0,0,0"/>
+                </StackPanel>
+            </StackPanel>
+
+            <Button 
+                    Background="Red"
+                    Foreground="White"
+                    FontWeight="Bold"
+                    Padding="10,5"
+                    Margin="0,0,10,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Grid.Column="1">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontFamily="Segoe MDL2 Assets"
+                       Text="&#xE713;"
+                       FontSize="20"
+                       Margin="0,0,3,0"/>
+                    <TextBlock Text="Edycja profilu" FontSize="14"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <StackPanel Grid.Row="1" Margin="0,5,0,0">
+            <TextBlock Text="Opinions"
+                       Foreground="White"
+                       FontSize="36"
+                       FontWeight="Bold"
+                       Margin="0,0,0,10"/>
+            <Rectangle Height="2" Fill="Orange" Margin="0,0,0,10"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
