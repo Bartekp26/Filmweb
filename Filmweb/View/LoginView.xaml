@@ -15,7 +15,7 @@
                    HorizontalAlignment="Center"
                    Margin="0,0,0,20"/>
 
-            <TextBlock Text="Login" Foreground="White"/>
+            <TextBlock Text="Login/E-mail" Foreground="White"/>
             <TextBox Width="250"/>
 
             <TextBlock Text="Hasło" Foreground="White" Margin="0,10,0,0"/>

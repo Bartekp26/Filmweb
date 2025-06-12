@@ -19,6 +19,7 @@ namespace Filmweb.ViewModel
 
         public LoginVM(MainVM mainVM)
         {
+            
             _mainVM = mainVM;
         }
     }

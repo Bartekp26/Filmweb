@@ -7,13 +7,13 @@ using System.Windows.Input;
 
 namespace Filmweb.ViewModel
 {
-    public class ProfileVM
+    public class EditProfileVM
     {
         private readonly MainVM _mainVM;
 
-        public ICommand NavigateToEditProfileCommand => _mainVM.NavigateToEditProfileCommand;
+        public ICommand NavigateToProfileCommand => _mainVM.NavigateToProfileCommand;
 
-        public ProfileVM(MainVM mainVM)
+        public EditProfileVM(MainVM mainVM)
         {
             _mainVM = mainVM;
         }

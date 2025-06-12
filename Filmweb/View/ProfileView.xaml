@@ -48,6 +48,13 @@
 
                 <Rectangle HorizontalAlignment="Left" Height="2" Width="350" Fill="Orange" Margin="0,0,0,10"/>
 
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Data dołączenia:" Foreground="White" FontWeight="Bold" FontSize="18"/>
+                    <TextBlock Text="User_date" Foreground="White" FontSize="18" Margin="5,0,0,0"/>
+                </StackPanel>
+
+                <Rectangle HorizontalAlignment="Left" Height="2" Width="350" Fill="Orange" Margin="0,0,0,10"/>
+
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                     <TextBlock Text="Favourite Film:" Foreground="White" FontWeight="Bold" FontSize="18"/>
                     <TextBlock Text="User_Fav_Film" Foreground="White" FontSize="18" Margin="5,0,0,0"/>
@@ -60,6 +67,7 @@
             </StackPanel>
 
             <Button 
+                    Command="{Binding NavigateToEditProfileCommand}"
                     Background="Red"
                     Foreground="White"
                     FontWeight="Bold"
