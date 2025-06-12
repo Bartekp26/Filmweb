@@ -18,8 +18,6 @@ namespace Filmweb.ViewModel
 {
     public class MainVM : INotifyPropertyChanged
     {
-
-
         private object _currentView;
         public object CurrentView
         {
@@ -83,37 +81,32 @@ namespace Filmweb.ViewModel
         }
 
 
-        //public void dc()
-        //{
-        //    string connectionString = @"Server=DESKTOP-EOMQHJ7\SQLEXPRESS;Database=FILMWEB;Trusted_Connection=True;";
+/*        public void dc()
+        {
+            SqlConnection connection = DatabaseConnection.GetConnection();
+            try
+            {
+                string query = "SELECT ID_Gatunku, Gatunek FROM Gatunek";
+                using (SqlCommand command = new SqlCommand(query, connection))
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    Console.WriteLine("ID_Gatunku\tGatunek");
+                    Console.WriteLine("-----------------------------");
 
-        //    using (SqlConnection connection = new SqlConnection(connectionString))
-        //    {
-        //        try
-        //        {
-        //            connection.Open();
-        //            string query = "SELECT ID_Gatunku, Gatunek FROM Gatunek";
-        //            using (SqlCommand command = new SqlCommand(query, connection))
-        //            using (SqlDataReader reader = command.ExecuteReader())
-        //            {
-        //                Console.WriteLine("ID_Gatunku\tGatunek");
-        //                Console.WriteLine("-----------------------------");
+                    while (reader.Read())
+                    {
+                        int id = reader.GetInt32(0);
+                        string nazwa = reader.GetString(1);
 
-        //                while (reader.Read())
-        //                {
-        //                    int id = reader.GetInt32(0); // kolumna 0: ID_Gatunku
-        //                    string nazwa = reader.GetString(1); // kolumna 1: Gatunek
-
-        //                    Console.WriteLine($"{id}\t\t{nazwa}");
-        //                }
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Console.WriteLine("Błąd: " + ex.Message);
-        //        }
-        //    }
-        //}
+                        Console.WriteLine($"{id}\t\t{nazwa}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Błąd: " + ex.Message);
+            }
+        }*/
         private void ExecuteLogin()
         {
             //dc();

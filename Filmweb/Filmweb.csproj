@@ -56,6 +56,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BoolToVisibilityConverter.cs" />
+    <Compile Include="DatabaseConnection.cs" />
     <Compile Include="InverseBoolToVisibilityConverter.cs" />
     <Compile Include="Model\MovieListItemM.cs" />
     <Compile Include="Model\MovieM.cs" />
@@ -157,6 +158,8 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="dbconfig.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
