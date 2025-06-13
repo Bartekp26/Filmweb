@@ -115,7 +115,19 @@ namespace Filmweb.ViewModel
 
         public void ExecuteRegister()
         {
+            var registerVM = _registerView.DataContext as RegisterVM;
 
+            if (registerVM == null) return;
+
+            var validationErrors = registerVM.ValidateRegister();
+
+            if (!string.IsNullOrEmpty(validationErrors))
+            {
+                MessageBox.Show(validationErrors, "Błąd rejestracji", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            // SqlConnection connection = DatabaseConnection.GetConnection();
 
             // po tej rejestracji lub logowaniu takie cos trza jebnac pobierajac te rzeczy z bazy, tak samo przy edycji
             //UserM user = new UserM
