@@ -3,6 +3,7 @@ using Filmweb.ViewModel.BaseClass;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -78,6 +79,8 @@ namespace Filmweb.ViewModel
                 errors.Add("Login jest wymagany.");
             else if (Username.Length > 30)
                 errors.Add("Login nie może być dłuższy niż 30 znaków.");
+            else if (IsUsernameInDatabase(Username))
+                errors.Add("Podana nazwa użytkownika jest już zajęta.");
 
             if (string.IsNullOrWhiteSpace(Password))
                 errors.Add("Hasło jest wymagane.");
@@ -101,9 +104,54 @@ namespace Filmweb.ViewModel
                     errors.Add("E-mail nie może być dłuższy niż 30 znaków.");
                 if (!Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
                     errors.Add("Nieprawidłowy adres e-mail.");
+                else if (IsEmailInDatabase(Email))
+                    errors.Add("Podany email jest już zajęty.");
             }
 
             return string.Join("\n", errors);
+        }
+        private bool IsUsernameInDatabase(string username)
+        {
+            SqlConnection connection = DatabaseConnection.GetConnection();
+
+            try
+            {
+                string query = $"SELECT COUNT(*) FROM UZ_Login WHERE Login = @Username";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Username", username);
+                    int count = (int)command.ExecuteScalar();
+                    return count == 1;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Błąd podczas sprawdzania unikalności: {ex.Message}");
+                return false;
+            }
+        }
+
+        private bool IsEmailInDatabase(string email)
+        {
+            SqlConnection connection = DatabaseConnection.GetConnection();
+
+            try
+            {
+                string query = $"SELECT COUNT(*) FROM UZ_Dane WHERE Login = @Email";
+
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Email", email);
+                    int count = (int)command.ExecuteScalar();
+                    return count == 1;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Błąd podczas sprawdzania unikalności: {ex.Message}");
+                return false;
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
