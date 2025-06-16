@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using BCrypt.Net;
 
 namespace Filmweb.ViewModel
 {
@@ -59,6 +60,79 @@ namespace Filmweb.ViewModel
         public RegisterVM(MainVM mainVM)
         {
             _mainVM = mainVM;
+        }
+
+        public bool TryRegisterUser(out string errorMessage)
+        {
+            errorMessage = ValidateRegister();
+
+            if (!string.IsNullOrEmpty(errorMessage))
+                return false;
+
+            try
+            {
+                return SaveUserToDatabase(out errorMessage);
+            }
+            catch (Exception ex)
+            {
+                errorMessage = $"Błąd rejestracji: {ex.Message}";
+                return false;
+            }
+        }
+
+        private bool SaveUserToDatabase(out string errorMessage)
+        {
+            errorMessage = null;
+            SqlConnection connection = DatabaseConnection.GetConnection();
+
+            using (SqlTransaction transaction = connection.BeginTransaction())
+            {
+                try
+                {
+                    // 1. Wstaw dane użytkownika
+                    string userQuery = @"INSERT INTO UZ_Dane (Imie, Nazwisko, Email, Data_dolaczenia) 
+                       VALUES (@FirstName, @LastName, @Email, @JoinDate);
+                       SELECT SCOPE_IDENTITY();";
+
+                    int userId;
+                    using (SqlCommand command = new SqlCommand(userQuery, connection, transaction))
+                    {
+                        command.Parameters.AddWithValue("@FirstName", FirstName);
+                        command.Parameters.AddWithValue("@LastName", LastName);
+                        command.Parameters.AddWithValue("@Email", Email);
+                        command.Parameters.AddWithValue("@JoinDate", DateTime.Now);
+
+                        // Pobierz wygenerowane ID
+                        userId = Convert.ToInt32(command.ExecuteScalar());
+                    }
+
+                    // 2. Wstaw dane logowania
+                    string loginQuery = @"INSERT INTO UZ_Login (ID_Uzytkownika, Login, Haslo) 
+                        VALUES (@UserId, @Username, @Password)";
+
+                    using (SqlCommand command = new SqlCommand(loginQuery, connection, transaction))
+                    {
+                        command.Parameters.AddWithValue("@UserId", userId);
+                        command.Parameters.AddWithValue("@Username", Username);
+                        command.Parameters.AddWithValue("@Password", BCrypt.Net.BCrypt.HashPassword(Password));
+                        command.ExecuteNonQuery();
+                    }
+
+                    transaction.Commit();
+                    return true;
+                }
+                catch (SqlException ex) when (ex.Number == 2627) // Duplicate key error
+                {
+                    transaction.Rollback();
+                    errorMessage = "Nazwa użytkownika lub email jest już zajęty.";
+                    return false;
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
         }
 
         public string ValidateRegister()
@@ -138,7 +212,7 @@ namespace Filmweb.ViewModel
 
             try
             {
-                string query = $"SELECT COUNT(*) FROM UZ_Dane WHERE Login = @Email";
+                string query = $"SELECT COUNT(*) FROM UZ_Dane WHERE Email = @Email";
 
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {

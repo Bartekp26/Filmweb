@@ -80,33 +80,6 @@ namespace Filmweb.ViewModel
             CurrentView = _loginView;
         }
 
-
-/*        public void dc()
-        {
-            SqlConnection connection = DatabaseConnection.GetConnection();
-            try
-            {
-                string query = "SELECT ID_Gatunku, Gatunek FROM Gatunek";
-                using (SqlCommand command = new SqlCommand(query, connection))
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    Console.WriteLine("ID_Gatunku\tGatunek");
-                    Console.WriteLine("-----------------------------");
-
-                    while (reader.Read())
-                    {
-                        int id = reader.GetInt32(0);
-                        string nazwa = reader.GetString(1);
-
-                        Console.WriteLine($"{id}\t\t{nazwa}");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Błąd: " + ex.Message);
-            }
-        }*/
         private void ExecuteLogin()
         {
             //dc();
@@ -119,27 +92,13 @@ namespace Filmweb.ViewModel
 
             if (registerVM == null) return;
 
-            var validationErrors = registerVM.ValidateRegister();
-
-            if (!string.IsNullOrEmpty(validationErrors))
+            if (!registerVM.TryRegisterUser(out var errorMessage))
             {
-                MessageBox.Show(validationErrors, "Błąd rejestracji", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(errorMessage, "Błąd rejestracji", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
-            // SqlConnection connection = DatabaseConnection.GetConnection();
-
-            // po tej rejestracji lub logowaniu takie cos trza jebnac pobierajac te rzeczy z bazy, tak samo przy edycji
-            //UserM user = new UserM
-            //{
-            //    FirstName = FirstName,
-            //    LastName = LastName,
-            //    Email = Email,
-            //    Username = Username,
-            //    Password = Password,
-            //    JoinDate = JoinDate
-            //};
-            CurrentView = _homeView;
+            CurrentView = _loginView;
         }
 
 
