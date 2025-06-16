@@ -51,6 +51,8 @@ namespace Filmweb.ViewModel
         private readonly EditProfileView _editprofileView;
         private RegisterVM _registerVM;
 
+        public UserM CurrentUser { get; private set; }
+
         public MainVM()
         {
             _registerVM = new RegisterVM(this);
@@ -82,7 +84,17 @@ namespace Filmweb.ViewModel
 
         private void ExecuteLogin()
         {
-            //dc();
+            var loginVM = _loginView.DataContext as LoginVM;
+            if (loginVM == null) return;
+
+            if (!loginVM.TryLoginUser(out var errorMessage, out var user))
+            {
+                MessageBox.Show(errorMessage, "Błąd logowania", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            CurrentUser = user;
+
             CurrentView = _homeView;
         }
 
