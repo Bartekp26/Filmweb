@@ -79,6 +79,7 @@
             <Button Grid.Row="5" Grid.ColumnSpan="2"
                     Content="Zobacz"
                     Width="100"
+                    Click="Zobacz_Click"
                     HorizontalAlignment="Center"
                     Padding="4"
                     Background="Orange"

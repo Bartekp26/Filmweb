@@ -113,6 +113,12 @@ namespace Filmweb.ViewModel
             CurrentView = _homeView;
         }
 
+        public void NavigateToMovieDetails(string title)
+        {
+            var vm = new MovieDetailsVM(title);
+            var view = new MovieDetailsView { DataContext = vm };
+            CurrentView = view;
+        }
         public void ExecuteRegister()
         {
             var registerVM = _registerView.DataContext as RegisterVM;

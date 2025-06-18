@@ -193,6 +193,11 @@ namespace Filmweb.ViewModel
             }
         }
 
+        public void OpenMovieDetails(string title)
+        {
+            _mainVM.NavigateToMovieDetails(title);
+        }
+
         public bool CanGoToNext => (_currentPage + 1) * PageSize < _filteredMovies.Count;
         public bool CanGoToPrevious => _currentPage > 0;
 

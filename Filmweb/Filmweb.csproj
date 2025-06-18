@@ -86,6 +86,7 @@
     <Compile Include="ViewModel\HomeVM.cs" />
     <Compile Include="ViewModel\LoginVM.cs" />
     <Compile Include="ViewModel\MainVM.cs" />
+    <Compile Include="ViewModel\MovieDetailsVM.cs" />
     <Compile Include="ViewModel\ProfileVM.cs" />
     <Compile Include="ViewModel\RegisterVM.cs" />
     <Compile Include="View\HomeView.xaml.cs">
@@ -111,6 +112,9 @@
     </Compile>
     <Compile Include="View\MovieItemView.xaml.cs">
       <DependentUpon>MovieItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MovieDetailsView.xaml.cs">
+      <DependentUpon>MovieDetailsView.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -153,6 +157,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\MovieItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MovieDetailsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Filmweb.Model;
+using Filmweb.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +25,30 @@ namespace Filmweb.View
         public MovieItemView()
         {
             InitializeComponent();
+
+
+
+        }
+        private void Zobacz_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is MovieListItemM movie)
+            {
+                var homeVM = FindHomeVM();
+                homeVM?.OpenMovieDetails(movie.Title);
+            }
+        }
+
+        private HomeVM FindHomeVM()
+        {
+            DependencyObject parent = this;
+            while (parent != null)
+            {
+                if ((parent as FrameworkElement)?.DataContext is HomeVM vm)
+                    return vm;
+
+                parent = System.Windows.Media.VisualTreeHelper.GetParent(parent);
+            }
+            return null;
         }
     }
 }
