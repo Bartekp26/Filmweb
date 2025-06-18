@@ -3,89 +3,141 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Filmweb.ViewModel
 {
-    
     public class HomeVM : INotifyPropertyChanged
     {
         private readonly MainVM _mainVM;
         private const int PageSize = 5;
         private int _currentPage = 0;
+        private List<MovieListItemM> _filteredMovies = new List<MovieListItemM>();
 
         public ObservableCollection<MovieListItemM> AllMovies { get; set; } = new ObservableCollection<MovieListItemM>();
         public ObservableCollection<MovieListItemM> PagedMovies { get; set; } = new ObservableCollection<MovieListItemM>();
+        public ObservableCollection<string> AvailableGenres { get; set; } = new ObservableCollection<string>();
 
+
+
+        private string _selectedGenre;
+        public string SelectedGenre
+        {
+            get => _selectedGenre;
+            set
+            {
+                _selectedGenre = value;
+                FilterPagedMovies();
+                OnPropertyChanged(nameof(SelectedGenre));
+            }
+        }
         public HomeVM(MainVM mainVM)
         {
             _mainVM = mainVM;
-
-            LoadMoviesFromDatabase();
+            LoadAllMovies();
             UpdatePagedMovies();
+            LoadGenresFromDatabase();
+            _filteredMovies = AllMovies.ToList();
         }
 
-        private void LoadMoviesFromDatabase()
+        private void LoadAllMovies()
         {
-            // testowo
-            AllMovies.Add(new MovieListItemM
+            var movies = new List<MovieListItemM>();
+            var connection = DatabaseConnection.GetConnection();
+
+            if (connection.State == System.Data.ConnectionState.Closed)
+                connection.Open();
+
+            string sql = @"
+                SELECT 
+                    F.ID_Filmu,
+                    F.Nazwa AS Title,
+                    F.Opis AS Description,
+                    F.Ocena AS Rating,
+                    F.url AS ImageUrl,
+                    (
+                        SELECT DISTINCT G.Gatunek + ', '
+                        FROM Conn_Filmy_Gat C2
+                        JOIN Gatunek G ON G.ID_Gatunku = C2.ID_Gatunku
+                        WHERE C2.ID_Filmu = F.ID_Filmu
+                        FOR XML PATH(''), TYPE
+                    ).value('.', 'NVARCHAR(MAX)') AS Genres
+                FROM Filmy F
+                ORDER BY F.ID_Filmu;";
+
+            using (var cmd = new SqlCommand(sql, connection))
+            using (var reader = cmd.ExecuteReader())
             {
-                Title = "Incepcja",
-                Description = "Sen we śnie",
-                Rating = 8.8,
-                UserRating = null, // lub np. 7.5
-                ImageUrl = "https://via.placeholder.com/180x150"
-            });
-            AllMovies.Add(new MovieListItemM
-            {
-                Title = "1",
-                Description = "Sen we śnie",
-                Rating = 8.8,
-                UserRating = 4, // lub np. 7.5
-                ImageUrl = "https://via.placeholder.com/180x150"
-            });
-            AllMovies.Add(new MovieListItemM
-            {
-                Title = "I2a",
-                Description = "Sen we śnie",
-                Rating = 8.8,
-                UserRating = 4.7, // lub np. 7.5
-                ImageUrl = "https://via.placeholder.com/180x150"
-            });
-            AllMovies.Add(new MovieListItemM
-            {
-                Title = "3a",
-                Description = "Sen we śnie",
-                Rating = 8.8,
-                UserRating = 4.7, // lub np. 7.5
-                ImageUrl = "https://via.placeholder.com/180x150"
-            });
-            AllMovies.Add(new MovieListItemM
-            {
-                Title = "I4a",
-                Description = "Sen we śnie",
-                Rating = 8.8,
-                UserRating = 4.7, // lub np. 7.5
-                ImageUrl = "https://via.placeholder.com/180x150"
-            });
-            AllMovies.Add(new MovieListItemM
-            {
-                Title = "I5ja",
-                Description = "Sen we śnie",
-                Rating = 8.8,
-                UserRating = 4.7, // lub np. 7.5
-                ImageUrl = "https://via.placeholder.com/180x150"
-            });
-            UpdatePagedMovies();
+                while (reader.Read())
+                {
+                    movies.Add(new MovieListItemM
+                    {
+                        Title = reader["Title"].ToString(),
+                        Description = reader["Description"].ToString(),
+                        Rating = Convert.ToDouble(reader["Rating"]),
+                        ImageUrl = reader["ImageUrl"].ToString(),
+                        GenreList = reader["Genres"]?.ToString()
+                                           ?.Split(',')
+                                           .Select(g => g.Trim())
+                                           .Where(g => !string.IsNullOrWhiteSpace(g))
+                                           .ToList()
+                    });
+                }
+            }
+
+            foreach (var movie in movies)
+                AllMovies.Add(movie);
         }
 
+        private void LoadGenresFromDatabase()
+        {
+            var connection = DatabaseConnection.GetConnection();
+
+            if (connection.State == System.Data.ConnectionState.Closed)
+                connection.Open();
+
+            string sql = "SELECT DISTINCT Gatunek FROM Gatunek WHERE Gatunek IS NOT NULL ORDER BY Gatunek;";
+
+            using (var cmd = new SqlCommand(sql, connection))
+            using (var reader = cmd.ExecuteReader())
+            {
+                AvailableGenres.Clear();
+                AvailableGenres.Add("Wszystkie gatunki");
+                
+                while (reader.Read())
+                {
+                    var genre = reader["Gatunek"]?.ToString();
+                    if (!string.IsNullOrWhiteSpace(genre))
+                        AvailableGenres.Add(genre);
+                }
+            }
+
+            SelectedGenre = "Wszystkie gatunki";
+        }
+
+        private void FilterPagedMovies()
+        {
+            _currentPage = 0;
+
+            if (!string.IsNullOrEmpty(SelectedGenre) && SelectedGenre != "Wszystkie gatunki")
+            {
+                _filteredMovies = AllMovies
+                    .Where(m => m.GenreList != null && m.GenreList.Contains(SelectedGenre))
+                    .ToList();
+            }
+            else
+            {
+                _filteredMovies = AllMovies.ToList();
+            }
+
+            UpdatePagedMovies();
+        }
         private void UpdatePagedMovies()
         {
             PagedMovies.Clear();
 
-            var moviesToShow = AllMovies
+            var moviesToShow = _filteredMovies
                 .Skip(_currentPage * PageSize)
                 .Take(PageSize);
 
@@ -114,7 +166,8 @@ namespace Filmweb.ViewModel
             }
         }
 
-        public bool CanGoToNext => (_currentPage + 1) * PageSize < AllMovies.Count;
+
+        public bool CanGoToNext => (_currentPage + 1) * PageSize < _filteredMovies.Count;
         public bool CanGoToPrevious => _currentPage > 0;
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -36,20 +36,18 @@
                             Margin="2,0,0,0"/>
                 </StackPanel>
 
-                <ComboBox x:Name="GenreComboBox"
-                          Width="200"
-                          Height="30"
-                          FontSize="14"
-                          FontWeight="Normal"
-                          HorizontalAlignment="Right"
-                          VerticalAlignment="Center"
-                          SelectedIndex="0">
-                    <ComboBoxItem Content="Sortuj po gatunku"
-                                  IsEnabled="False"
-                                  IsSelected="True"
-                                  FontStyle="Italic"
-                                  Foreground="Gray"/>
-                    <ComboBoxItem Content="Wszystkie"/>
+                <ComboBox
+                    x:Name="GenreComboBox"
+                    Width="200"
+                    Height="30"
+                    FontSize="14"
+                    FontWeight="Normal"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    ItemsSource="{Binding AvailableGenres}"
+                    SelectedItem="{Binding SelectedGenre, Mode=TwoWay}">
+
+              
                 </ComboBox>
             </Grid>
 

@@ -23,6 +23,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
 
                 <RowDefinition Height="Auto"/>
@@ -58,17 +59,24 @@
                        Foreground="White"
                        TextWrapping="Wrap"
                        Margin="0,5,0,0"/>
-
             <TextBlock Grid.Row="2" Grid.ColumnSpan="2"
-                       Text="{Binding Description}"
-                       FontSize="12"
+                       Text="{Binding GenresAsText}"
+                       FontSize="14"
                        Foreground="Gray"
-                       TextTrimming="CharacterEllipsis"
                        TextWrapping="Wrap"
-                       MaxHeight="48"
                        Margin="0,2,0,0"/>
+            <TextBlock Grid.Row="3" Grid.ColumnSpan="2"
+                           Text="{Binding Description}"
+                           FontSize="12"
+                           Foreground="Gray"
+                           TextTrimming="CharacterEllipsis"
+                           TextWrapping="Wrap"
+                           MaxHeight="48"
+                           Margin="0,2,0,0"/>
 
-            <Button Grid.Row="4" Grid.ColumnSpan="2"
+            
+
+            <Button Grid.Row="5" Grid.ColumnSpan="2"
                     Content="Zobacz"
                     Width="100"
                     HorizontalAlignment="Center"

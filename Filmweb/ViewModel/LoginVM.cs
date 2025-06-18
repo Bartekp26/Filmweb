@@ -55,45 +55,47 @@ namespace Filmweb.ViewModel
             try
             {
                 var connection = DatabaseConnection.GetConnection();
-                string query = @"SELECT UD.Imie, UD.Nazwisko, UD.Email, 
+                
+                    string query = @"SELECT UD.Imie, UD.Nazwisko, UD.Email, 
                                UD.Data_dolaczenia, UL.Login, UL.Haslo
                                FROM UZ_Login UL
                                JOIN UZ_Dane UD ON UL.ID_Uzytkownika = UD.ID_Uzytkownika
                                WHERE UL.Login = @Username";
 
-                var command = new SqlCommand(query, connection);
-                command.Parameters.AddWithValue("@Username", Username);
+                    var command = new SqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@Username", Username);
 
-                using (var reader = command.ExecuteReader())
-                {
-                    if (!reader.Read())
+                    using (var reader = command.ExecuteReader())
                     {
-                        errorMessage = "Nieprawidłowy login lub hasło";
-                        return false;
+                        if (!reader.Read())
+                        {
+                            errorMessage = "Nieprawidłowy login lub hasło";
+                            return false;
+                        }
+
+                        string storedHash = reader["Haslo"].ToString();
+                        if (!BCrypt.Net.BCrypt.Verify(Password, storedHash))
+                        {
+                            errorMessage = "Nieprawidłowy login lub hasło";
+                            return false;
+                        }
+
+                        loggedInUser = new UserM
+                        {
+                            FirstName = reader["Imie"].ToString(),
+                            LastName = reader["Nazwisko"].ToString(),
+                            Email = reader["Email"].ToString(),
+                            JoinDate = Convert.ToDateTime(reader["Data_dolaczenia"]),
+                            Username = reader["Login"].ToString(),
+                            // FavouriteMovie = GetMovieFromDb(reader["Ulubiony_film"].ToString()), // Twoja metoda do pobrania filmu
+                            // FavouriteActor = reader["Ulubiony_aktor"].ToString()
+
+                            // Hasło celowo pomijamy - nie przechowujemy w modelu!
+                        };
+
+                        return true;
                     }
-
-                    string storedHash = reader["Haslo"].ToString();
-                    if (!BCrypt.Net.BCrypt.Verify(Password, storedHash))
-                    {
-                        errorMessage = "Nieprawidłowy login lub hasło";
-                        return false;
-                    }
-
-                    loggedInUser = new UserM
-                    {
-                        FirstName = reader["Imie"].ToString(),
-                        LastName = reader["Nazwisko"].ToString(),
-                        Email = reader["Email"].ToString(),
-                        JoinDate = Convert.ToDateTime(reader["Data_dolaczenia"]),
-                        Username = reader["Login"].ToString(),
-                        // FavouriteMovie = GetMovieFromDb(reader["Ulubiony_film"].ToString()), // Twoja metoda do pobrania filmu
-                        // FavouriteActor = reader["Ulubiony_aktor"].ToString()
-
-                        // Hasło celowo pomijamy - nie przechowujemy w modelu!
-                    };
-
-                    return true;
-                }
+                
             }
             catch (Exception ex)
             {

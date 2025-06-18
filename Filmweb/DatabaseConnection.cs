@@ -11,8 +11,10 @@ namespace Filmweb
 
         public static SqlConnection GetConnection()
         {
-            if(_connection == null)
+
+            if (_connection == null)
             {
+
                 string baseDir = AppDomain.CurrentDomain.BaseDirectory;
                 string configPath = Path.Combine(baseDir, "..", "..", "dbconfig.txt");
                 var config = LoadConfig(configPath);
@@ -24,10 +26,17 @@ namespace Filmweb
                 string password = config["password"];
 
                 string connectionString = $"Server={ip},{port};Database={database};User Id={user};Password={password};";
-                
+
                 _connection = new SqlConnection(connectionString);
+            }
+
+            if (_connection.State == System.Data.ConnectionState.Closed)
+            {
+
                 _connection.Open();
             }
+ 
+
             return _connection;
         }
         private static Dictionary<string, string> LoadConfig(string path)
