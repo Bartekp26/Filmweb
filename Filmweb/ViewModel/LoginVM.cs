@@ -88,12 +88,9 @@ namespace Filmweb.ViewModel
                             JoinDate = Convert.ToDateTime(reader["Data_dolaczenia"]),
                             Username = reader["Login"].ToString(),
                             // FavouriteMovie = GetMovieFromDb(reader["Ulubiony_film"].ToString()), // Twoja metoda do pobrania filmu
-                            // FavouriteActor = reader["Ulubiony_aktor"].ToString()
-
-                            // Hasło celowo pomijamy - nie przechowujemy w modelu!
                         };
 
-                        return true;
+                    return true;
                     }
                 
             }
@@ -104,62 +101,6 @@ namespace Filmweb.ViewModel
                 return false;
             }
         }
-
-        /*        public bool TryLoginUser(out string errorMessage, out int? userId)
-                {
-                    errorMessage = null;
-                    userId = null;
-
-                    if (string.IsNullOrEmpty(Username))
-                    {
-                        errorMessage = "Nazwa użytkownika jest wymagana";
-                        return false;
-                    }
-
-                    if (string.IsNullOrEmpty(Password))
-                    {
-                        errorMessage = "Hasło jest wymagane";
-                        return false;
-                    }
-
-                    try
-                    {
-                        var connection = DatabaseConnection.GetConnection();
-
-                        var query = @"SELECT U.ID_Uzytkownika, U.Haslo
-                                      FROM UZ_Login U WHERE U.Login = @Username";
-
-                        var command = new SqlCommand(query, connection);
-                        command.Parameters.AddWithValue("@Username", Username);
-
-                        var reader = command.ExecuteReader();
-
-                        if (!reader.Read())
-                        {
-                            errorMessage = "Nieprawidłowy login lub hasło";
-                            reader.Close();
-                            return false;
-                        }
-
-                        userId = reader.GetInt32(0);
-                        var storedHash = reader.GetString(1);
-                        reader.Close();
-
-                        if (!BCrypt.Net.BCrypt.Verify(Password, storedHash))
-                        {
-                            errorMessage = "Nieprawidłowy login lub hasło";
-                            return false;
-                        }
-
-                        return true;
-                    }
-                    catch (Exception ex)
-                    {
-                        errorMessage = "Wystąpił błąd podczas logowania";
-                        Console.WriteLine($"Błąd logowania: {ex.Message}");
-                        return false;
-                    }
-                }*/
 
         public void ClearAllFields(Action clearPasswordBoxAction = null)
         {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Filmweb.Model
 {
-    class ReviewM
+    public class ReviewM
     {
         public string Content { get; set; }    
         public double Rating { get; set; }       

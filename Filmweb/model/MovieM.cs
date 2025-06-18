@@ -8,7 +8,7 @@ using System.Windows.Controls;
 
 namespace Filmweb.Model
 {
-    class MovieM
+    public class MovieM
     {
         public string Title { get; set; }
         public string Description { get; set; }

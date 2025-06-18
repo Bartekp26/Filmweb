@@ -51,7 +51,19 @@ namespace Filmweb.ViewModel
         private readonly EditProfileView _editprofileView;
         private RegisterVM _registerVM;
 
-        public UserM CurrentUser { get; private set; }
+        private UserM _currentUser;
+        public UserM CurrentUser
+        {
+            get => _currentUser;
+            set
+            {
+                if (_currentUser != value)
+                {
+                    _currentUser = value;
+                    OnPropertyChanged(nameof(CurrentUser));
+                }
+            }
+        }
 
         public MainVM()
         {
