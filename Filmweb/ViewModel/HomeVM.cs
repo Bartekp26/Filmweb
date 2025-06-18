@@ -40,7 +40,7 @@ namespace Filmweb.ViewModel
             });
             AllMovies.Add(new MovieListItemM
             {
-                Title = "Incepcja",
+                Title = "1",
                 Description = "Sen we śnie",
                 Rating = 8.8,
                 UserRating = 4, // lub np. 7.5
@@ -48,7 +48,7 @@ namespace Filmweb.ViewModel
             });
             AllMovies.Add(new MovieListItemM
             {
-                Title = "Incepcja",
+                Title = "I2a",
                 Description = "Sen we śnie",
                 Rating = 8.8,
                 UserRating = 4.7, // lub np. 7.5
@@ -56,7 +56,7 @@ namespace Filmweb.ViewModel
             });
             AllMovies.Add(new MovieListItemM
             {
-                Title = "Incepcja",
+                Title = "3a",
                 Description = "Sen we śnie",
                 Rating = 8.8,
                 UserRating = 4.7, // lub np. 7.5
@@ -64,7 +64,7 @@ namespace Filmweb.ViewModel
             });
             AllMovies.Add(new MovieListItemM
             {
-                Title = "Incepcja",
+                Title = "I4a",
                 Description = "Sen we śnie",
                 Rating = 8.8,
                 UserRating = 4.7, // lub np. 7.5
@@ -72,7 +72,7 @@ namespace Filmweb.ViewModel
             });
             AllMovies.Add(new MovieListItemM
             {
-                Title = "Incepcja",
+                Title = "I5ja",
                 Description = "Sen we śnie",
                 Rating = 8.8,
                 UserRating = 4.7, // lub np. 7.5

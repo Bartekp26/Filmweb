@@ -15,6 +15,6 @@ namespace Filmweb.Model
         public string Username { get; set; }
         //public string Password { get; set; }
         //public MovieM FavouriteMovie { get; set; }
-        //public String FavouriteActor { get; set; }
+
     }
 }
