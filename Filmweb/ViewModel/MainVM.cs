@@ -50,6 +50,7 @@ namespace Filmweb.ViewModel
         private readonly ProfileView _profileView;
         private readonly EditProfileView _editprofileView;
         private RegisterVM _registerVM;
+        private EditProfileVM _editProfileVM;
 
         private UserM _currentUser;
         public UserM CurrentUser
@@ -59,8 +60,8 @@ namespace Filmweb.ViewModel
             {
                 if (_currentUser != value)
                 {
-                    _currentUser = value;
-                    OnPropertyChanged(nameof(CurrentUser));
+                _currentUser = value;
+                OnPropertyChanged(nameof(CurrentUser));
                 }
             }
         }
@@ -68,6 +69,7 @@ namespace Filmweb.ViewModel
         public MainVM()
         {
             _registerVM = new RegisterVM(this);
+            _editProfileVM = new EditProfileVM(this);
             var loginVM = new LoginVM(this);
             var registerVM = new RegisterVM(this);
             var homeVM = new HomeVM(this);
@@ -78,7 +80,7 @@ namespace Filmweb.ViewModel
             _registerView = new RegisterView { DataContext = registerVM };
             _homeView = new HomeView { DataContext = homeVM };
             _profileView = new ProfileView { DataContext = profileVM };
-            _editprofileView = new EditProfileView { DataContext = editprofileVM };
+            _editprofileView = new EditProfileView { DataContext = _editProfileVM };
 
             SwitchToRegisterCommand = new RelayCommand(_ => CurrentView = _registerView, p => true);
             SwitchToLoginCommand = new RelayCommand(_ => CurrentView = _loginView, p => true);
@@ -106,6 +108,7 @@ namespace Filmweb.ViewModel
             }
 
             CurrentUser = user;
+            _editProfileVM.editUser(CurrentUser);
             loginVM.ClearAllFields(() => (_loginView as LoginView)?.ClearPasswordBox());
             CurrentView = _homeView;
         }

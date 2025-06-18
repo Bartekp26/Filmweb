@@ -17,34 +17,38 @@
             <StackPanel Orientation="Vertical" Grid.Column="0">
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
                     <TextBlock FontFamily="Segoe MDL2 Assets"
-                        Text="&#xE77B;"
-                        Foreground="White"
-                        FontSize="50"
-                        Margin="0,0,10,0"/>
-                    <TextBox Width="250" Margin="40,0,0,0" FontSize="16" Height="25"/>
+                    Text="&#xE77B;"
+                    Foreground="White"
+                    FontSize="50"
+                    Margin="0,0,10,0"/>
+                    <TextBox Text="{Binding EditedUser.Username, UpdateSourceTrigger=PropertyChanged}"
+                    Width="250" Margin="40,0,0,0" FontSize="16" Height="25"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                     <TextBlock Text="Imię:" Foreground="White" FontWeight="Bold" FontSize="18"/>
-                    <TextBox Width="250" Margin="58,0,0,0" FontSize="16"/>
+                    <TextBox Text="{Binding EditedUser.FirstName, UpdateSourceTrigger=PropertyChanged}"
+                    Width="250" Margin="58,0,0,0" FontSize="16"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                     <TextBlock Text="Nazwisko:" Foreground="White" FontWeight="Bold" FontSize="18"/>
-                    <TextBox Width="250" Margin="14,0,0,0" FontSize="16"/>
+                    <TextBox Text="{Binding EditedUser.LastName, UpdateSourceTrigger=PropertyChanged}"
+                    Width="250" Margin="14,0,0,0" FontSize="16"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                     <TextBlock Text="Mail:" Foreground="White" FontWeight="Bold" FontSize="18"/>
-                    <TextBox Width="250" Margin="58,0,0,0" FontSize="16"/>
+                    <TextBox Text="{Binding EditedUser.Email, UpdateSourceTrigger=PropertyChanged}"
+                    Width="250" Margin="58,0,0,0" FontSize="16"/>
                 </StackPanel>
 
                 <Rectangle HorizontalAlignment="Left" Height="2" Width="350" Fill="Orange" Margin="0,0,0,10"/>
 
 
-                <Button 
+                <Button Command="{Binding SaveCommand}"
                         Background="Red"
-                         Foreground="White"
+                        Foreground="White"
                         FontWeight="Bold"
                         Padding="10,5"
                         Margin="0,0,10,0"
