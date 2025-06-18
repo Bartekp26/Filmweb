@@ -109,6 +109,9 @@
     <Compile Include="View\EditProfileView.xaml.cs">
       <DependentUpon>EditProfileView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\MovieItemView.xaml.cs">
+      <DependentUpon>MovieItemView.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -146,6 +149,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\EditProfileView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MovieItemView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

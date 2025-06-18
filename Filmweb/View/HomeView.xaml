@@ -8,32 +8,149 @@
              d:DesignHeight="560" d:DesignWidth="1000" Background="Black">
 	<Grid VerticalAlignment="Top" Margin="20">
 		<StackPanel>
-			<StackPanel Orientation="Horizontal" VerticalAlignment="Top">
-				<TextBox x:Name="SearchBox"
-                         Width="500"
-                         Height="30"
-                         FontSize="16"
-                         FontWeight="Bold"
-                         VerticalContentAlignment="Center"
-                         Padding="5,0"
-                         Text="Wyszukaj..."
-                         Foreground="Gray"
-                         GotFocus="SearchBox_GotFocus"
-                         LostFocus="SearchBox_LostFocus" />
+            <Grid VerticalAlignment="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-                <Button Width="30"
-                        Height="30"
-                        Background="White"
-                        FontFamily="Segoe MDL2 Assets"
-                        Content="&#xE71E;"
-				        FontSize="20"
-				        Margin="2,0,0,0"/> 
-            </StackPanel>
+                <StackPanel Orientation="Horizontal" Grid.Column="0">
+                    <TextBox x:Name="SearchBox"
+                             Width="500"
+                             Height="30"
+                             FontSize="16"
+                             FontWeight="Bold"
+                             VerticalContentAlignment="Center"
+                             Padding="5,0"
+                             Text="Wyszukaj..."
+                             Foreground="Gray"
+                             GotFocus="SearchBox_GotFocus"
+                             LostFocus="SearchBox_LostFocus" />
 
-			<Rectangle Height="3"
+                    <Button Width="30"
+                            Height="30"
+                            Background="White"
+                            FontFamily="Segoe MDL2 Assets"
+                            Content="&#xE71E;"
+                            FontSize="20"
+                            Margin="2,0,0,0"/>
+                </StackPanel>
+
+                <ComboBox x:Name="GenreComboBox"
+                          Width="200"
+                          Height="30"
+                          FontSize="14"
+                          FontWeight="Normal"
+                          HorizontalAlignment="Right"
+                          VerticalAlignment="Center"
+                          SelectedIndex="0">
+                    <ComboBoxItem Content="Sortuj po gatunku"
+                                  IsEnabled="False"
+                                  IsSelected="True"
+                                  FontStyle="Italic"
+                                  Foreground="Gray"/>
+                    <ComboBoxItem Content="Wszystkie"/>
+                </ComboBox>
+            </Grid>
+
+            <Rectangle Height="3"
                        Width="1000"
                        Fill="Orange"
                        Margin="0,5,0,0"/>
-		</StackPanel>
-	</Grid>
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Top"  HorizontalAlignment="Center">
+                <Button Width="180"
+                        Height="40"
+                        FontFamily="Segoe UI"
+                        FontSize="15"
+                        Margin="5"
+                        Padding="10,0"
+                        HorizontalContentAlignment="Center"
+                        Click="PreviousPage_Click"
+                        IsEnabled="{Binding CanGoToPrevious}">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#444"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Opacity" Value="1"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Foreground" Value="Transparent"/>
+                                    <Setter Property="Opacity" Value="0"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock FontFamily="Segoe MDL2 Assets"
+                                   Text="&#xE72B;"
+                                   FontSize="18"
+                                   Margin="0,0,8,0"/>
+                        <TextBlock Text="Poprzednia strona"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <Button Width="180"
+                        Height="40"
+                        FontFamily="Segoe UI"
+                        FontSize="15"
+                        Margin="5"
+                        Padding="10,0"
+                        HorizontalContentAlignment="Center"
+                        Click="NextPage_Click"
+                        IsEnabled="{Binding CanGoToNext}">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#bbb"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Opacity" Value="1"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Foreground" Value="Transparent"/>
+                                    <Setter Property="Opacity" Value="0"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="Następna strona"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,8,0"/>
+                        <TextBlock FontFamily="Segoe MDL2 Assets"
+                                   Text="&#xE72A;"
+                                   FontSize="18"/>
+                    </StackPanel>
+                </Button>
+
+            </StackPanel>
+            <ScrollViewer Background="Black"
+                          HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Disabled"
+                          Margin="0,20,0,0">
+                <ItemsControl ItemsSource="{Binding PagedMovies}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <local:MovieItemView />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </StackPanel>
+        
+       
+    </Grid>
 </UserControl>

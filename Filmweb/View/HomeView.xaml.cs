@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Filmweb.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,7 +27,17 @@ namespace Filmweb.View
         {
             InitializeComponent();
         }
+        private void PreviousPage_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is HomeVM vm)
+                vm.GoToPreviousPage();
+        }
 
+        private void NextPage_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is HomeVM vm)
+                vm.GoToNextPage();
+        }
         private void SearchBox_GotFocus(object sender, RoutedEventArgs e)
         {
             if (SearchBox.Text == PlaceholderText)
