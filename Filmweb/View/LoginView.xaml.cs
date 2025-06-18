@@ -32,5 +32,9 @@ namespace Filmweb.View
                 vm.Password = ((PasswordBox)sender).Password;
             }
         }
+        public void ClearPasswordBox()
+        {
+            passwordBox.Password = string.Empty;
+        }
     }
 }

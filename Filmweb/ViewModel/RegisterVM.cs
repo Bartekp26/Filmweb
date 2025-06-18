@@ -227,6 +227,20 @@ namespace Filmweb.ViewModel
                 return false;
             }
         }
+        public void ClearAllFields(Action clearPasswordBoxAction = null)
+        {
+            FirstName = string.Empty;
+            LastName = string.Empty;
+            Email = string.Empty;
+            Username = string.Empty;
+            Password = string.Empty;
+            OnPropertyChanged(nameof(FirstName));
+            OnPropertyChanged(nameof(LastName));
+            OnPropertyChanged(nameof(Email));
+            OnPropertyChanged(nameof(Username));
+            OnPropertyChanged(nameof(Password));
+            clearPasswordBoxAction?.Invoke();
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

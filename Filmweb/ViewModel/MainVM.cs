@@ -94,7 +94,7 @@ namespace Filmweb.ViewModel
             }
 
             CurrentUser = user;
-
+            loginVM.ClearAllFields(() => (_loginView as LoginView)?.ClearPasswordBox());
             CurrentView = _homeView;
         }
 
@@ -110,6 +110,7 @@ namespace Filmweb.ViewModel
                 return;
             }
 
+            registerVM.ClearAllFields(() => (_registerView as RegisterView)?.ClearPasswordBox());
             CurrentView = _loginView;
         }
 

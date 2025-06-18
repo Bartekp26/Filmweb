@@ -28,7 +28,7 @@
             <TextBox Width="250" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"/>
 
             <TextBlock Text="Hasło" Foreground="White" Margin="0,10,0,0"/>
-            <PasswordBox Width="250" PasswordChanged="PasswordBox_PasswordChanged"/>
+            <PasswordBox x:Name="passwordBox" Width="250" PasswordChanged="PasswordBox_PasswordChanged"/>
 
             <Button Content="Zarejestruj się" Width="120" Margin="0,10" Command="{Binding RegisterInCommand}"/>
 

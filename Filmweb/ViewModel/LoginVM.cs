@@ -161,6 +161,15 @@ namespace Filmweb.ViewModel
                     }
                 }*/
 
+        public void ClearAllFields(Action clearPasswordBoxAction = null)
+        {
+            Username = string.Empty;
+            Password = string.Empty;
+            OnPropertyChanged(nameof(Username));
+            OnPropertyChanged(nameof(Password));
+            clearPasswordBoxAction?.Invoke();
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
