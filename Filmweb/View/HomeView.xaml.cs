@@ -40,7 +40,8 @@ namespace Filmweb.View
         }
         private void SearchBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (SearchBox.Text == PlaceholderText)
+            var vm = DataContext as HomeVM;
+            if (SearchBox.Text == "Wyszukaj...")
             {
                 SearchBox.Text = "";
                 SearchBox.Foreground = Brushes.Black;
@@ -49,9 +50,10 @@ namespace Filmweb.View
 
         private void SearchBox_LostFocus(object sender, RoutedEventArgs e)
         {
+            var vm = DataContext as HomeVM;
             if (string.IsNullOrWhiteSpace(SearchBox.Text))
             {
-                SearchBox.Text = PlaceholderText;
+                SearchBox.Text = "Wyszukaj...";
                 SearchBox.Foreground = Brushes.Gray;
             }
         }

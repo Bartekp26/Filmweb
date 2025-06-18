@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Windows.Media;
 
 namespace Filmweb.ViewModel
 {
@@ -19,7 +20,12 @@ namespace Filmweb.ViewModel
         public ObservableCollection<MovieListItemM> PagedMovies { get; set; } = new ObservableCollection<MovieListItemM>();
         public ObservableCollection<string> AvailableGenres { get; set; } = new ObservableCollection<string>();
 
+        public string Placeholder => "Wyszukaj...";
 
+        public Brush SearchBoxForeground =>
+            string.IsNullOrWhiteSpace(SearchText) || SearchText == Placeholder
+            ? Brushes.Gray
+            : Brushes.Black;
 
         private string _selectedGenre;
         public string SelectedGenre
@@ -28,17 +34,34 @@ namespace Filmweb.ViewModel
             set
             {
                 _selectedGenre = value;
+                _currentPage = 0;
                 FilterPagedMovies();
                 OnPropertyChanged(nameof(SelectedGenre));
             }
         }
+
+        private string _searchText;
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                _searchText = value;
+                _currentPage = 0;
+                FilterPagedMovies();
+                OnPropertyChanged(nameof(SearchText));
+                OnPropertyChanged(nameof(SearchBoxForeground));
+            }
+        }
+
         public HomeVM(MainVM mainVM)
         {
             _mainVM = mainVM;
             LoadAllMovies();
-            UpdatePagedMovies();
-            LoadGenresFromDatabase();
             _filteredMovies = AllMovies.ToList();
+            LoadGenresFromDatabase();
+            FilterPagedMovies();
+            SearchText = Placeholder;
         }
 
         private void LoadAllMovies()
@@ -78,10 +101,10 @@ namespace Filmweb.ViewModel
                         Rating = Convert.ToDouble(reader["Rating"]),
                         ImageUrl = reader["ImageUrl"].ToString(),
                         GenreList = reader["Genres"]?.ToString()
-                                           ?.Split(',')
-                                           .Select(g => g.Trim())
-                                           .Where(g => !string.IsNullOrWhiteSpace(g))
-                                           .ToList()
+                            ?.Split(',')
+                            .Select(g => g.Trim())
+                            .Where(g => !string.IsNullOrWhiteSpace(g))
+                            .ToList()
                     });
                 }
             }
@@ -104,7 +127,7 @@ namespace Filmweb.ViewModel
             {
                 AvailableGenres.Clear();
                 AvailableGenres.Add("Wszystkie gatunki");
-                
+
                 while (reader.Read())
                 {
                     var genre = reader["Gatunek"]?.ToString();
@@ -118,21 +141,25 @@ namespace Filmweb.ViewModel
 
         private void FilterPagedMovies()
         {
-            _currentPage = 0;
+            IEnumerable<MovieListItemM> filtered = AllMovies;
 
-            if (!string.IsNullOrEmpty(SelectedGenre) && SelectedGenre != "Wszystkie gatunki")
+            if (!string.IsNullOrWhiteSpace(SelectedGenre) &&
+                SelectedGenre != "Wszystkie gatunki")
             {
-                _filteredMovies = AllMovies
-                    .Where(m => m.GenreList != null && m.GenreList.Contains(SelectedGenre))
-                    .ToList();
-            }
-            else
-            {
-                _filteredMovies = AllMovies.ToList();
+                filtered = filtered.Where(m => m.GenreList != null && m.GenreList.Contains(SelectedGenre));
             }
 
+            if (!string.IsNullOrWhiteSpace(SearchText) &&
+                SearchText != "Wyszukaj...")
+            {
+                filtered = filtered.Where(m => m.Title != null &&
+                    m.Title.IndexOf(SearchText, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+
+            _filteredMovies = filtered.ToList();
             UpdatePagedMovies();
         }
+
         private void UpdatePagedMovies()
         {
             PagedMovies.Clear();
@@ -165,7 +192,6 @@ namespace Filmweb.ViewModel
                 UpdatePagedMovies();
             }
         }
-
 
         public bool CanGoToNext => (_currentPage + 1) * PageSize < _filteredMovies.Count;
         public bool CanGoToPrevious => _currentPage > 0;
