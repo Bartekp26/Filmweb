@@ -100,7 +100,7 @@ namespace Filmweb.ViewModel
                         command.Parameters.AddWithValue("@FirstName", FirstName);
                         command.Parameters.AddWithValue("@LastName", LastName);
                         command.Parameters.AddWithValue("@Email", Email);
-                        command.Parameters.AddWithValue("@JoinDate", DateTime.Now);
+                        command.Parameters.AddWithValue("@JoinDate", DateTime.Now.Date);
 
                         // Pobierz wygenerowane ID
                         userId = Convert.ToInt32(command.ExecuteScalar());
