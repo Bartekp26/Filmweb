@@ -81,6 +81,7 @@
     <Compile Include="Model\ReviewM.cs" />
     <Compile Include="Model\UserM.cs" />
     <Compile Include="NullToCollapsedVisibilityConverter.cs" />
+    <Compile Include="ViewModel\AddReviewVM.cs" />
     <Compile Include="ViewModel\BaseClass\RelayCommand.cs" />
     <Compile Include="ViewModel\BaseClass\ViewModelBase.cs" />
     <Compile Include="ViewModel\EditProfileVM.cs" />
@@ -90,6 +91,9 @@
     <Compile Include="ViewModel\MovieDetailsVM.cs" />
     <Compile Include="ViewModel\ProfileVM.cs" />
     <Compile Include="ViewModel\RegisterVM.cs" />
+    <Compile Include="View\AddReviewView.xaml.cs">
+      <DependentUpon>AddReviewView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\HomeView.xaml.cs">
       <DependentUpon>HomeView.xaml</DependentUpon>
     </Compile>
@@ -130,6 +134,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="View\AddReviewView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\HomeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

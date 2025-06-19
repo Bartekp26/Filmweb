@@ -48,7 +48,7 @@
                                    Foreground="Black"
                                    Grid.Column="0"/>
 
-                        <TextBlock Text="{Binding Rating, StringFormat={}{0:N1}/10}"
+                        <TextBlock Text="{Binding Movie.Rating, StringFormat={}{0:N1}/10}"
                                    FontSize="16"
                                    FontWeight="Bold"
                                    Foreground="Black"
@@ -72,13 +72,31 @@
         </Border>
 
         <!-- Nagłówek "Opinie" -->
-        <StackPanel Grid.Row="1" Margin="0,0,0,10">
-            <TextBlock Text="Opinie"
-                       FontSize="28"
-                       FontWeight="Bold"
-                       Foreground="White"/>
-            <Rectangle HorizontalAlignment="Left" Height="2" Width="300" Fill="Orange" Margin="0,5,0,0"/>
-        </StackPanel>
+        <Grid Grid.Row="1" Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="Opinie"
+                   FontSize="28"
+                   FontWeight="Bold"
+                   Foreground="White"/>
+                <Rectangle HorizontalAlignment="Left" Height="2" Width="300" Fill="Orange" Margin="0,5,0,0"/>
+            </StackPanel>
+
+            <Button Content="Dodaj opinię"
+            Width="140"
+            Height="35"
+            Margin="10,5,0,0"
+            Background="Orange"
+            Foreground="Black"
+            FontWeight="Bold"
+            VerticalAlignment="Top"
+            Grid.Column="1"
+            Command="{Binding AddReviewCommand}" />
+        </Grid>
 
         <!-- Scrollowana lista opinii -->
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">

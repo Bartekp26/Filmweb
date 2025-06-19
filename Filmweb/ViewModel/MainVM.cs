@@ -41,6 +41,7 @@ namespace Filmweb.ViewModel
         public ICommand NavigateToHomeCommand { get; }
         public ICommand NavigateToProfileCommand { get; }
         public ICommand NavigateToEditProfileCommand { get; }
+        public ICommand AddReviewCommand { get; }
 
         public bool IsLoginOrRegisterView => CurrentView is LoginView || CurrentView is RegisterView;
 
@@ -49,6 +50,7 @@ namespace Filmweb.ViewModel
         private readonly HomeView _homeView;
         private readonly ProfileView _profileView;
         private readonly EditProfileView _editprofileView;
+        private readonly AddReviewView _addreviewView;
         private RegisterVM _registerVM;
         private EditProfileVM _editProfileVM;
 
@@ -75,11 +77,13 @@ namespace Filmweb.ViewModel
             var homeVM = new HomeVM(this);
             var profileVM = new ProfileVM(this);
             var editprofileVM = new EditProfileVM(this);
+            var addreviewVM = new AddReviewVM(this);
 
             _loginView = new LoginView { DataContext = loginVM };
             _registerView = new RegisterView { DataContext = registerVM };
             _homeView = new HomeView { DataContext = homeVM };
             _profileView = new ProfileView { DataContext = profileVM };
+            _addreviewView = new AddReviewView { DataContext = addreviewVM };
             _editprofileView = new EditProfileView { DataContext = _editProfileVM };
 
             SwitchToRegisterCommand = new RelayCommand(_ => CurrentView = _registerView, p => true);
@@ -92,6 +96,7 @@ namespace Filmweb.ViewModel
             NavigateToHomeCommand = new RelayCommand(_ => CurrentView = _homeView, p => true);
             NavigateToEditProfileCommand = new RelayCommand(_ => CurrentView = _editprofileView, p => true);
             NavigateToProfileCommand = new RelayCommand(_ => CurrentView = _profileView, p => true);
+            AddReviewCommand = new RelayCommand(_ => CurrentView = _addreviewView, p => true);
 
             CurrentView = _loginView;
         }
@@ -115,7 +120,7 @@ namespace Filmweb.ViewModel
 
         public void NavigateToMovieDetails(string title)
         {
-            var vm = new MovieDetailsVM(title);
+            var vm = new MovieDetailsVM(title, this);
             var view = new MovieDetailsView { DataContext = vm };
             CurrentView = view;
         }

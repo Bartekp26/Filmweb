@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Filmweb.ViewModel
 {
@@ -15,6 +16,9 @@ namespace Filmweb.ViewModel
     public class MovieDetailsVM : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private readonly MainVM _mainVM;
+        public ICommand AddReviewCommand => _mainVM.AddReviewCommand;
 
         public MovieM Movie { get; private set; }
 
@@ -33,8 +37,9 @@ namespace Filmweb.ViewModel
             }
         }
 
-        public MovieDetailsVM(string title)
+        public MovieDetailsVM(string title, MainVM mainVM)
         {
+            _mainVM = mainVM;
             LoadMovieFromDatabase(title);
             LoadMovieReviews(title);
         }
