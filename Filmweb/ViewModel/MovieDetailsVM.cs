@@ -1,21 +1,36 @@
 ﻿using Filmweb.Model;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Filmweb.ViewModel
 {
 
-    public class MovieDetailsVM
+    public class MovieDetailsVM : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public MovieM Movie { get; private set; }
 
         public string Title => Movie?.Title;
         public string Description => Movie?.Description;
         public string GenresAsText => string.Join(", ", Movie?.Genres ?? new List<string>());
+
+        private bool _isImageVisible = true;
+        public bool IsImageVisible
+        {
+            get => _isImageVisible;
+            set
+            {
+                _isImageVisible = value;
+                OnPropertyChanged(nameof(IsImageVisible));
+            }
+        }
 
         public MovieDetailsVM(string title)
         {
@@ -68,6 +83,11 @@ namespace Filmweb.ViewModel
                     }
                 }
             }
+        }
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

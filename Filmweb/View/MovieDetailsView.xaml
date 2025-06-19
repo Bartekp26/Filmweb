@@ -4,30 +4,72 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Filmweb.View"
+             xmlns:main="clr-namespace:Filmweb"
              mc:Ignorable="d" 
              d:DesignHeight="560" d:DesignWidth="1000" Background="Black">
+
     <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+        <StackPanel Margin="20">
+            <Border Background="#FF8A2A" Padding="10" CornerRadius="2" Margin="0,0,0,20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <!-- Collapse column width if image is null -->
+                        <ColumnDefinition Width="{Binding IsImageVisible, Converter={StaticResource NullToCollapsedGridLengthConverter}}" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-        <TextBlock Text="{Binding Title}"
-                   FontSize="24"
-                   FontWeight="Bold"
-                   Foreground="White"/>
+                    <Image Source="{Binding ImageUrl}"
+                       Width="150"
+                       Height="200"
+                       Margin="0,0,15,0"
+                       Stretch="UniformToFill"
+                       Grid.Column="0"
+                       Visibility="{Binding ImageUrl, Converter={StaticResource NullToCollapsedVisibilityConverter}}"
+                       VerticalAlignment="Top"/>
 
-        <TextBlock Text="{Binding GenresAsText}"
-                   Grid.Row="1"
-                   FontSize="16"
-                   Foreground="Gray"
-                   Margin="0,5,0,5"/>
+                    <StackPanel Grid.Column="1">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-        <TextBlock Text="{Binding Description}"
-                   Grid.Row="2"
-                   FontSize="14"
-                   Foreground="White"
-                   TextWrapping="Wrap"/>
+                            <TextBlock Text="{Binding Title}"
+                                   FontSize="26"
+                                   FontWeight="Bold"
+                                   Foreground="Black"
+                                   Grid.Column="0"/>
+
+                            <TextBlock Text="{Binding Rating, StringFormat={}{0:N1}/10}"
+                                   FontSize="16"
+                                   FontWeight="Bold"
+                                   Foreground="Black"
+                                   Grid.Column="1"
+                                   VerticalAlignment="Top"
+                                   Margin="10,5,0,0"/>
+                        </Grid>
+
+                        <TextBlock Text="{Binding GenresAsText}"
+                               FontSize="14"
+                               Foreground="White"
+                               Margin="0,5,0,0"/>
+
+                        <TextBlock Text="{Binding Description}"
+                               FontSize="14"
+                               Foreground="Black"
+                               TextWrapping="Wrap"
+                               Margin="0,2,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <StackPanel>
+                <TextBlock Text="Opinie"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       Foreground="White"/>
+                <Rectangle HorizontalAlignment="Left" Height="2" Width="300" Fill="Orange" Margin="0,5,0,10"/>
+            </StackPanel>
+        </StackPanel>
     </Grid>
 </UserControl>

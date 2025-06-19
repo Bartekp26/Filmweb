@@ -6,5 +6,7 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <local:NullToCollapsedGridLengthConverter x:Key="NullToCollapsedGridLengthConverter" />
+        <local:NullToCollapsedVisibilityConverter x:Key="NullToCollapsedVisibilityConverter" />
     </Application.Resources>
 </Application>

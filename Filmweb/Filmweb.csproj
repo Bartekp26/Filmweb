@@ -80,6 +80,7 @@
     <Compile Include="Model\MovieM.cs" />
     <Compile Include="Model\ReviewM.cs" />
     <Compile Include="Model\UserM.cs" />
+    <Compile Include="NullToCollapsedVisibilityConverter.cs" />
     <Compile Include="ViewModel\BaseClass\RelayCommand.cs" />
     <Compile Include="ViewModel\BaseClass\ViewModelBase.cs" />
     <Compile Include="ViewModel\EditProfileVM.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="View\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="NullToCollapsedGridLengthConverter.cs" />
     <Compile Include="View\ProfileView.xaml.cs">
       <DependentUpon>ProfileView.xaml</DependentUpon>
     </Compile>
