@@ -1,6 +1,7 @@
 ﻿using Filmweb.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Linq;
@@ -35,6 +36,7 @@ namespace Filmweb.ViewModel
         public MovieDetailsVM(string title)
         {
             LoadMovieFromDatabase(title);
+            LoadMovieReviews(title);
         }
 
         private void LoadMovieFromDatabase(string title)
@@ -78,8 +80,58 @@ namespace Filmweb.ViewModel
                                 ?.Split(',')
                                 .Select(g => g.Trim())
                                 .Where(g => !string.IsNullOrWhiteSpace(g))
-                                .ToList()
+                                .ToList(),
+                            Reviews = new List<ReviewM>()
                         };
+                    }
+                }
+            }
+        }
+
+        private void LoadMovieReviews(string title)
+        {
+            var connection = DatabaseConnection.GetConnection();
+
+            if (connection.State == System.Data.ConnectionState.Closed)
+                connection.Open();
+
+            string sql = @"
+                        SELECT 
+                            R.Tresc as Content,
+                            R.Ocena as Rating,
+                            R.Data_dodania as DateAdded,
+                            (
+                                SELECT L.Login
+                                FROM UZ_Login L
+                                WHERE L.ID_Uzytkownika=R.ID_Uzytkownika
+                            ) as Author
+                        FROM Filmy F
+                        LEFT JOIN opinie R ON F.ID_Filmu=R.ID_Filmu
+                        WHERE F.Nazwa = @title;";
+
+            using (var cmd = new SqlCommand(sql, connection))
+            {
+                cmd.Parameters.AddWithValue("@title", title);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (reader["Content"] != DBNull.Value)
+                        {
+                            var review = new ReviewM
+                            {
+                                Content = reader["Content"].ToString(),
+                                Rating = reader["Rating"] != DBNull.Value ? Convert.ToDouble(reader["Rating"]) : 0,
+                                DateAdded = reader["DateAdded"] != DBNull.Value ? Convert.ToDateTime(reader["DateAdded"]) : DateTime.MinValue,
+                                Author = new UserM
+                                {
+                                    Username = reader["Author"]?.ToString() ?? "Anonim"
+                                }
+                            };
+
+                            Movie.Reviews.Add(review);
+                        }
                     }
                 }
             }
