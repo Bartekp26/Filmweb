@@ -90,31 +90,16 @@ namespace Filmweb.ViewModel
                 try
                 {
                     // 1. Wstaw dane użytkownika
-                    string userQuery = @"INSERT INTO UZ_Dane (Imie, Nazwisko, Email, Data_dolaczenia) 
-                       VALUES (@FirstName, @LastName, @Email, @JoinDate);
-                       SELECT SCOPE_IDENTITY();";
+                    string userQuery = @"EXEC Dodaj_UZ @login=@Username, @haslo=@Password, @mail=@Email, @imie=@FirstName, @nazwisko=@LastName";
 
-                    int userId;
                     using (SqlCommand command = new SqlCommand(userQuery, connection, transaction))
                     {
                         command.Parameters.AddWithValue("@FirstName", FirstName);
                         command.Parameters.AddWithValue("@LastName", LastName);
                         command.Parameters.AddWithValue("@Email", Email);
-                        command.Parameters.AddWithValue("@JoinDate", DateTime.Now.Date);
-
-                        // Pobierz wygenerowane ID
-                        userId = Convert.ToInt32(command.ExecuteScalar());
-                    }
-
-                    // 2. Wstaw dane logowania
-                    string loginQuery = @"INSERT INTO UZ_Login (ID_Uzytkownika, Login, Haslo) 
-                        VALUES (@UserId, @Username, @Password)";
-
-                    using (SqlCommand command = new SqlCommand(loginQuery, connection, transaction))
-                    {
-                        command.Parameters.AddWithValue("@UserId", userId);
                         command.Parameters.AddWithValue("@Username", Username);
                         command.Parameters.AddWithValue("@Password", BCrypt.Net.BCrypt.HashPassword(Password));
+
                         command.ExecuteNonQuery();
                     }
 
