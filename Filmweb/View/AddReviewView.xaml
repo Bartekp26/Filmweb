@@ -4,6 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:Filmweb.View"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d"
              d:DesignHeight="500" d:DesignWidth="800"
              Background="Black">
@@ -15,8 +16,19 @@
                        Foreground="Orange"
                        Margin="0,0,0,20"/>
 
-            <TextBlock Text="Ocena (0-10):" Foreground="White"/>
-            <TextBox Text="{Binding Rating}" Margin="0,5,0,10" Width="200"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="-5,5,0,10">
+                <Label Content="Ocena (0-10):" Foreground="White" VerticalAlignment="Center" Width="100"/>
+
+                <xctk:IntegerUpDown
+                        Value="{Binding Rating}"
+                        Minimum="0"
+                        Maximum="10"
+                        Increment="1"
+                        Width="50"
+                        PreviewTextInput="IntegerUpDown_PreviewTextInput"
+                        DataObject.Pasting="IntegerUpDown_Pasting"
+                        ValueChanged="IntegerUpDown_ValueChanged"/>
+            </StackPanel>
 
             <TextBlock Text="Treść opinii:" Foreground="White"/>
             <TextBox Text="{Binding Content}" AcceptsReturn="True" Height="150" TextWrapping="Wrap" Margin="0,5,0,20"/>
