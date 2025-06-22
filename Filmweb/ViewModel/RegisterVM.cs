@@ -89,7 +89,6 @@ namespace Filmweb.ViewModel
             {
                 try
                 {
-                    // 1. Wstaw dane użytkownika
                     string userQuery = @"EXEC Dodaj_UZ @login=@Username, @haslo=@Password, @mail=@Email, @imie=@FirstName, @nazwisko=@LastName";
 
                     using (SqlCommand command = new SqlCommand(userQuery, connection, transaction))

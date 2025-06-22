@@ -95,7 +95,8 @@
             FontWeight="Bold"
             VerticalAlignment="Top"
             Grid.Column="1"
-            Command="{Binding AddReviewCommand}" />
+            Command="{Binding AddReviewCommand}"
+            CommandParameter="{Binding Title}" />
         </Grid>
 
         <!-- Scrollowana lista opinii -->
@@ -110,7 +111,7 @@
                                            Foreground="Orange"
                                            FontSize="16"/>
 
-                                <TextBlock Text="{Binding Rating, StringFormat=Ocena: {0:N1}/10}" 
+                                <TextBlock Text="{Binding Rating, StringFormat=Ocena: {0:N0}/10}" 
                                            Foreground="White" 
                                            FontSize="14" 
                                            Margin="0,2,0,0"/>

@@ -127,7 +127,7 @@ namespace Filmweb.ViewModel
                             var review = new ReviewM
                             {
                                 Content = reader["Content"].ToString(),
-                                Rating = reader["Rating"] != DBNull.Value ? Convert.ToDouble(reader["Rating"]) : 0,
+                                Rating = reader["Rating"] != DBNull.Value ? Convert.ToInt32(reader["Rating"]) : 0,
                                 DateAdded = reader["DateAdded"] != DBNull.Value ? Convert.ToDateTime(reader["DateAdded"]) : DateTime.MinValue,
                                 Author = new UserM
                                 {

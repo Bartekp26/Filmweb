@@ -38,7 +38,8 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     ItemsSource="{Binding AvailableGenres}"
-                    SelectedItem="{Binding SelectedGenre, Mode=TwoWay}">
+                    SelectedItem="{Binding SelectedGenre, Mode=TwoWay}"
+                    VerticalContentAlignment="Center">
 
               
                 </ComboBox>

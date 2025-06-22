@@ -45,7 +45,7 @@
                         Background="Orange"
                         Foreground="Black"
                         FontWeight="Bold"
-                        Command="{Binding SubmitCommand}" />
+                        Command="{Binding DataContext.SubmitReviewCommand, RelativeSource={RelativeSource AncestorType=Window}}" />
             </StackPanel>
         </StackPanel>
     </Grid>
