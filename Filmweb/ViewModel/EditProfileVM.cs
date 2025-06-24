@@ -47,7 +47,7 @@ namespace Filmweb.ViewModel
                 LastName = user.LastName,
                 Email = user.Email,
                 JoinDate = user.JoinDate,
-                FavouriteMovie = user.FavouriteMovie
+                FavouriteMovies = user.FavouriteMovies
             };
         }
 
@@ -142,7 +142,7 @@ namespace Filmweb.ViewModel
                     LastName = EditedUser.LastName,
                     Email = EditedUser.Email,
                     JoinDate = EditedUser.JoinDate,
-                    FavouriteMovie = EditedUser.FavouriteMovie
+                    FavouriteMovies = EditedUser.FavouriteMovies
                 };
 
                 MessageBox.Show("Dane zostały zapisane", "Sukces", MessageBoxButton.OK, MessageBoxImage.Information);

@@ -76,13 +76,11 @@ namespace Filmweb.ViewModel
             var loginVM = new LoginVM(this);
             var registerVM = new RegisterVM(this);
             var homeVM = new HomeVM(this);
-            var profileVM = new ProfileVM(this);
             var editprofileVM = new EditProfileVM(this);
 
             _loginView = new LoginView { DataContext = loginVM };
             _registerView = new RegisterView { DataContext = registerVM };
             _homeView = new HomeView { DataContext = homeVM };
-            _profileView = new ProfileView { DataContext = profileVM };
             _editprofileView = new EditProfileView { DataContext = _editProfileVM };
 
             SwitchToRegisterCommand = new RelayCommand(_ => CurrentView = _registerView, p => true);
@@ -94,7 +92,14 @@ namespace Filmweb.ViewModel
 
             NavigateToHomeCommand = new RelayCommand(_ => CurrentView = _homeView, p => true);
             NavigateToEditProfileCommand = new RelayCommand(_ => CurrentView = _editprofileView, p => true);
-            NavigateToProfileCommand = new RelayCommand(_ => CurrentView = _profileView, p => true);
+
+            NavigateToProfileCommand = new RelayCommand(_ =>
+            {
+                var profileVM = new ProfileVM(this);
+                var profileView = new ProfileView { DataContext = profileVM };
+                CurrentView = profileView;
+            }, p => true);
+
             AddReviewCommand = new RelayCommand(param =>
             {
                 string movieTitle = param as string;

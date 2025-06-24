@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Filmweb.View"
              mc:Ignorable="d" 
              d:DesignHeight="560" d:DesignWidth="1000" Background="Black">
+<ScrollViewer VerticalScrollBarVisibility="Auto">
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -55,10 +56,15 @@
 
                 <Rectangle HorizontalAlignment="Left" Height="2" Width="350" Fill="Orange" Margin="0,0,0,10"/>
 
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Ulubiony film:" Foreground="White" FontWeight="Bold" FontSize="18"/>
-                    <TextBlock Text="{Binding CurrentUser.FavouriteMovie.Title}" Foreground="White" FontSize="18" Margin="5,0,0,0"/>
-                </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                        <TextBlock Text="Ulubione filmy:" Foreground="White" FontWeight="Bold" FontSize="18"/>
+                        <TextBlock Text="{Binding CurrentUser.FavouriteMovies}"
+                                   Foreground="White"
+                                   FontSize="18"
+                                   Margin="5,0,0,0"
+                                   TextWrapping="Wrap"
+                                   MaxWidth="650"/> 
+                    </StackPanel>
             </StackPanel>
 
             <Button 
@@ -90,4 +96,5 @@
             <Rectangle Height="2" Fill="Orange" Margin="0,0,0,10"/>
         </StackPanel>
     </Grid>
+</ScrollViewer>
 </UserControl>

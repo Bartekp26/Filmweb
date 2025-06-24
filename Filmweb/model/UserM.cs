@@ -13,6 +13,6 @@ namespace Filmweb.Model
         public string Email { get; set; }
         public DateTime JoinDate { get; set; }
         public string Username { get; set; }
-        public MovieM FavouriteMovie { get; set; }
+        public string FavouriteMovies { get; set; }
     }
 }

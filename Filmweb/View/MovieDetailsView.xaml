@@ -38,8 +38,9 @@
                 <StackPanel Grid.Column="1">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
                         <TextBlock Text="{Binding Title}"
@@ -48,12 +49,27 @@
                                    Foreground="Black"
                                    Grid.Column="0"/>
 
+                        <Button Content="{Binding HeartIcon}"
+                                FontFamily="Segoe MDL2 Assets"
+                                FontSize="20"
+                                Background="Transparent"
+                                BorderBrush="Transparent"
+                                Foreground="Red"
+                                Margin="7,0,0,0"
+                                Width="Auto"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Left"
+                                Cursor="Hand"
+                                Command="{Binding ToggleFavouriteCommand}" 
+                                Grid.Column="1" />
+
                         <TextBlock Text="{Binding Movie.Rating, StringFormat={}{0:N1}/10}"
                                    FontSize="16"
                                    FontWeight="Bold"
                                    Foreground="Black"
-                                   Grid.Column="1"
+                                   Grid.Column="2"
                                    VerticalAlignment="Top"
+                                   HorizontalAlignment="Right"
                                    Margin="10,5,0,0"/>
                     </Grid>
 

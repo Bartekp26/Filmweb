@@ -1,4 +1,5 @@
 ﻿using Filmweb.Model;
+using Filmweb.ViewModel.BaseClass;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -37,11 +38,118 @@ namespace Filmweb.ViewModel
             }
         }
 
+        public string HeartIcon => IsFavourite ? "\uEB52" : "\uEB51";
+
+        private bool _isFavourite;
+        public bool IsFavourite
+        {
+            get => _isFavourite;
+            set
+            {
+                if (_isFavourite != value)
+                {
+                    _isFavourite = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public ICommand ToggleFavouriteCommand { get; }
+
         public MovieDetailsVM(string title, MainVM mainVM)
         {
             _mainVM = mainVM;
             LoadMovieFromDatabase(title);
             LoadMovieReviews(title);
+            LoadIsFavourite();
+
+            ToggleFavouriteCommand = new RelayCommand(_ => ToggleFavourite(), p => true);
+            OnPropertyChanged(nameof(IsFavourite));
+            OnPropertyChanged(nameof(HeartIcon));
+        }
+
+        private void ToggleFavourite()
+        {
+            SqlConnection connection = DatabaseConnection.GetConnection();
+            using (SqlTransaction transaction = connection.BeginTransaction())
+            {
+                try
+                {
+                    string query;
+
+                    if (IsFavourite)
+                    {
+                        query = @"
+                            DELETE FROM Fav_Filmy
+                            WHERE ID_Uzytkownika = (SELECT ID_Uzytkownika FROM UZ_Login WHERE Login = @Login)
+                            AND ID_Filmu = (SELECT ID_Filmu FROM Filmy WHERE Nazwa = @Title)";
+                    }
+                    else
+                    {
+                        query = @"
+                            INSERT INTO Fav_Filmy (ID_Filmu, ID_Uzytkownika)
+                            VALUES (
+                                (SELECT ID_Filmu FROM Filmy WHERE Nazwa = @Title),
+                                (SELECT ID_Uzytkownika FROM UZ_Login WHERE Login = @Login)
+                            )";
+                    }
+
+                    using (SqlCommand command = new SqlCommand(query, connection, transaction))
+                    {
+                        command.Parameters.AddWithValue("@Login", _mainVM.CurrentUser.Username);
+                        command.Parameters.AddWithValue("@Title", Movie.Title);
+                        command.ExecuteNonQuery();
+                    }
+
+                    transaction.Commit();
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+
+            LoadIsFavourite();
+        }
+
+        public void LoadIsFavourite()
+        {
+            SqlConnection connection = DatabaseConnection.GetConnection();
+            using (SqlTransaction transaction = connection.BeginTransaction())
+            {
+                try
+                {
+                    string query = @"
+                            SELECT ISNULL((
+                                SELECT 1
+                                FROM Fav_Filmy FF
+                                INNER JOIN Filmy F ON F.ID_Filmu = FF.ID_Filmu
+                                WHERE FF.ID_Uzytkownika = (
+                                    SELECT ID_Uzytkownika FROM UZ_Login WHERE Login = @Login
+                                )
+                                AND F.Nazwa = @Title
+                            ), 0);";
+
+                    using (SqlCommand command = new SqlCommand(query, connection, transaction))
+                    {
+                        command.Parameters.AddWithValue("@Login", _mainVM.CurrentUser.Username);
+                        command.Parameters.AddWithValue("@Title", Movie.Title);
+
+                        var result = command.ExecuteScalar();
+                        IsFavourite = (result != null && Convert.ToInt32(result) == 1);
+                    }
+
+                    transaction.Commit();
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+            OnPropertyChanged(nameof(IsFavourite));
+            OnPropertyChanged(nameof(HeartIcon));
         }
 
         private void LoadMovieFromDatabase(string title)
