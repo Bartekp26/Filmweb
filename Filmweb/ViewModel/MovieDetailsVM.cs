@@ -10,10 +10,8 @@ using Filmweb.ViewModel.BaseClass;
 
 namespace Filmweb.ViewModel
 {
-    public class MovieDetailsVM : INotifyPropertyChanged
+    public class MovieDetailsVM : ViewModelBase
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-
         private readonly MainVM _mainVM;
 
         private MovieM _movie;
@@ -300,8 +298,5 @@ namespace Filmweb.ViewModel
                 }
             }
         }
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

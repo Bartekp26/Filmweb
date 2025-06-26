@@ -12,7 +12,7 @@ using System.Windows.Input;
 
 namespace Filmweb.ViewModel
 {
-    public class AddReviewVM : INotifyPropertyChanged
+    public class AddReviewVM : ViewModelBase
     {
         private readonly MainVM _mainVM;
 
@@ -198,12 +198,6 @@ namespace Filmweb.ViewModel
                     throw;
                 }
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

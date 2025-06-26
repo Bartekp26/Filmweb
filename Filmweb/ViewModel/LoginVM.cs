@@ -13,7 +13,7 @@ using System.Windows.Input;
 
 namespace Filmweb.ViewModel
 { 
-    public class LoginVM : INotifyPropertyChanged
+    public class LoginVM : ViewModelBase
     {
         private readonly MainVM _mainVM;
 
@@ -108,12 +108,6 @@ namespace Filmweb.ViewModel
             OnPropertyChanged(nameof(Username));
             OnPropertyChanged(nameof(Password));
             clearPasswordBoxAction?.Invoke();
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

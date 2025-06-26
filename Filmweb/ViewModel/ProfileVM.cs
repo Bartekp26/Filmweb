@@ -1,4 +1,5 @@
 ﻿using Filmweb.Model;
+using Filmweb.ViewModel.BaseClass;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,7 +15,7 @@ using System.Windows.Media;
 
 namespace Filmweb.ViewModel
 {
-    public class ProfileVM : INotifyPropertyChanged
+    public class ProfileVM : ViewModelBase
     {
         private readonly MainVM _mainVM;
 
@@ -114,12 +115,6 @@ namespace Filmweb.ViewModel
             {
                 OnPropertyChanged(nameof(CurrentUser));
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

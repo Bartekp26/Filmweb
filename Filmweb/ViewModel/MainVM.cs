@@ -16,7 +16,7 @@ using System.Windows;
 
 namespace Filmweb.ViewModel
 {
-    public class MainVM : INotifyPropertyChanged
+    public class MainVM : ViewModelBase
     {
         private object _currentView;
         public object CurrentView
@@ -169,9 +169,5 @@ namespace Filmweb.ViewModel
                 }
             }
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged([CallerMemberName] string propertyName = "") =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

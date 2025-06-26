@@ -6,10 +6,11 @@ using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Windows.Media;
+using Filmweb.ViewModel.BaseClass;
 
 namespace Filmweb.ViewModel
 {
-    public class HomeVM : INotifyPropertyChanged
+    public class HomeVM : ViewModelBase
     {
         private readonly MainVM _mainVM;
         private const int PageSize = 5;
@@ -211,7 +212,7 @@ namespace Filmweb.ViewModel
                 }
             }
         }
-        
+
         public void GoToNextPage()
         {
             if (CanGoToNext)
@@ -237,9 +238,5 @@ namespace Filmweb.ViewModel
 
         public bool CanGoToNext => (_currentPage + 1) * PageSize < _filteredMovies.Count;
         public bool CanGoToPrevious => _currentPage > 0;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string name) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }
