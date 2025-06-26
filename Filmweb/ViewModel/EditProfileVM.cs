@@ -14,7 +14,7 @@ using System.Windows.Input;
 
 namespace Filmweb.ViewModel
 {
-    public class EditProfileVM : ViewModelBase
+    public class EditProfileVM : INotifyPropertyChanged
     {
         private readonly MainVM _mainVM;
         public UserM CurrentUser => _mainVM.CurrentUser;
@@ -216,6 +216,12 @@ namespace Filmweb.ViewModel
             {
                 MessageBox.Show($"Wystąpił błąd: {ex.Message}", "Błąd", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

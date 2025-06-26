@@ -81,7 +81,11 @@ namespace Filmweb.ViewModel
                             F.ID_Filmu,
                             F.Nazwa AS Title,
                             F.Opis AS Description,
-                            F.Ocena AS Rating,
+                            (
+                                SELECT AVG(CAST(Ocena AS FLOAT))
+                                FROM opinie O
+                                WHERE O.ID_Filmu = F.ID_Filmu
+                            ) AS Rating,
                             F.url AS ImageUrl,
                             (
                                 SELECT DISTINCT G.Gatunek + ', '
@@ -116,7 +120,7 @@ namespace Filmweb.ViewModel
                         {
                             Title = reader["Title"].ToString(),
                             Description = reader["Description"].ToString(),
-                            Rating = Convert.ToDouble(reader["Rating"]),
+                            Rating = reader["Rating"] != DBNull.Value ? Convert.ToDouble(reader["Rating"]) : 0,
                             ImageUrl = reader["ImageUrl"].ToString(),
                             UserRating = reader["UserRating"] != DBNull.Value ? (double?)Convert.ToDouble(reader["UserRating"]) : null,
                             GenreList = reader["Genres"]?.ToString()
