@@ -21,7 +21,7 @@
 
                 <xctk:IntegerUpDown
                         Value="{Binding Rating}"
-                        Minimum="0"
+                        Minimum="1"
                         Maximum="10"
                         Increment="1"
                         Width="50"
