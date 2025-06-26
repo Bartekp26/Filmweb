@@ -55,7 +55,6 @@ namespace Filmweb.ViewModel
         {
             try
             {
-                // Walidacja
                 if (string.IsNullOrWhiteSpace(EditedUser.Username) ||
                     string.IsNullOrWhiteSpace(EditedUser.FirstName) ||
                     string.IsNullOrWhiteSpace(EditedUser.LastName) ||
@@ -70,7 +69,6 @@ namespace Filmweb.ViewModel
                 if (connection.State != System.Data.ConnectionState.Open)
                     connection.Open();
 
-                // Pobierz ID obecnego użytkownika
                 string getIdQuery = "SELECT TOP 1 ID_Uzytkownika FROM UZ_Dane WHERE Email = @OldEmail";
                 SqlCommand getIdCommand = new SqlCommand(getIdQuery, connection);
                 getIdCommand.Parameters.AddWithValue("@OldEmail", _mainVM.CurrentUser.Email);
@@ -84,7 +82,6 @@ namespace Filmweb.ViewModel
 
                 int userId = (int)idResult;
 
-                // Sprawdź, czy login już istnieje (dla innego użytkownika)
                 string checkLoginQuery = @"SELECT COUNT(*) FROM UZ_Login 
                                    WHERE Login = @Username AND ID_Uzytkownika != @UserId";
                 SqlCommand checkLoginCmd = new SqlCommand(checkLoginQuery, connection);
@@ -98,7 +95,6 @@ namespace Filmweb.ViewModel
                     return;
                 }
 
-                // Sprawdź, czy email już istnieje (dla innego użytkownika)
                 string checkEmailQuery = @"SELECT COUNT(*) FROM UZ_Dane 
                                    WHERE Email = @Email AND ID_Uzytkownika != @UserId";
                 SqlCommand checkEmailCmd = new SqlCommand(checkEmailQuery, connection);
@@ -112,7 +108,6 @@ namespace Filmweb.ViewModel
                     return;
                 }
 
-                // Aktualizuj login
                 string loginQuery = @"UPDATE UZ_Login 
                               SET Login = @Username 
                               WHERE ID_Uzytkownika = @UserId";
@@ -121,7 +116,6 @@ namespace Filmweb.ViewModel
                 loginCommand.Parameters.AddWithValue("@UserId", userId);
                 loginCommand.ExecuteNonQuery();
 
-                // Aktualizuj dane
                 string userQuery = @"UPDATE UZ_Dane 
                              SET Imie = @FirstName, 
                                  Nazwisko = @LastName, 
@@ -134,7 +128,6 @@ namespace Filmweb.ViewModel
                 userCommand.Parameters.AddWithValue("@UserId", userId);
                 userCommand.ExecuteNonQuery();
 
-                // Aktualizuj użytkownika w VM
                 _mainVM.CurrentUser = new UserM
                 {
                     Username = EditedUser.Username,

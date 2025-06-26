@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using System;
+using System.Windows;
 
 namespace Filmweb
 {
@@ -11,33 +12,36 @@ namespace Filmweb
 
         public static SqlConnection GetConnection()
         {
-
-            if (_connection == null)
+            try
             {
+                if (_connection == null)
+                {
+                    string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                    string configPath = Path.Combine(baseDir, "..", "..", "dbconfig.txt");
+                    var config = LoadConfig(configPath);
 
-                string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-                string configPath = Path.Combine(baseDir, "..", "..", "dbconfig.txt");
-                var config = LoadConfig(configPath);
+                    string ip = config["ip"];
+                    string port = config["port"];
+                    string database = config["database"];
+                    string user = config["user"];
+                    string password = config["password"];
 
-                string ip = config["ip"];
-                string port = config["port"];
-                string database = config["database"];
-                string user = config["user"];
-                string password = config["password"];
+                    string connectionString = $"Server={ip},{port};Database={database};User Id={user};Password={password};";
+                    _connection = new SqlConnection(connectionString);
+                }
 
-                string connectionString = $"Server={ip},{port};Database={database};User Id={user};Password={password};";
+                if (_connection.State == System.Data.ConnectionState.Closed)
+                {
+                    _connection.Open();
+                }
 
-                _connection = new SqlConnection(connectionString);
+                return _connection;
             }
-
-            if (_connection.State == System.Data.ConnectionState.Closed)
+            catch (Exception ex)
             {
-
-                _connection.Open();
+                MessageBox.Show($"Nie udało się połączyć z bazą danych:\n{ex.Message}", "Błąd połączenia", MessageBoxButton.OK, MessageBoxImage.Error);
+                throw; 
             }
- 
-
-            return _connection;
         }
         private static Dictionary<string, string> LoadConfig(string path)
         {

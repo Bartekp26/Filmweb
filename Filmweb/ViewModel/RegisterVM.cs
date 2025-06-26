@@ -105,7 +105,7 @@ namespace Filmweb.ViewModel
                     transaction.Commit();
                     return true;
                 }
-                catch (SqlException ex) when (ex.Number == 2627) // Duplicate key error
+                catch (SqlException ex) when (ex.Number == 2627)
                 {
                     transaction.Rollback();
                     errorMessage = "Nazwa użytkownika lub email jest już zajęty.";

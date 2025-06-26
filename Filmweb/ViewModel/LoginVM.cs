@@ -87,7 +87,6 @@ namespace Filmweb.ViewModel
                             Email = reader["Email"].ToString(),
                             JoinDate = Convert.ToDateTime(reader["Data_dolaczenia"]),
                             Username = reader["Login"].ToString(),
-                            // FavouriteMovie = GetMovieFromDb(reader["Ulubiony_film"].ToString()), // Twoja metoda do pobrania filmu
                         };
 
                     return true;
