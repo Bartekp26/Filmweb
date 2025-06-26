@@ -79,12 +79,53 @@ namespace Filmweb.ViewModel
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(EditedUser.Username) ||
-                    string.IsNullOrWhiteSpace(EditedUser.FirstName) ||
-                    string.IsNullOrWhiteSpace(EditedUser.LastName) ||
-                    string.IsNullOrWhiteSpace(EditedUser.Email))
+                var errors = new List<string>();
+
+                if (string.IsNullOrWhiteSpace(EditedUser.FirstName))
+                    errors.Add("Imię jest wymagane.");
+                else if (EditedUser.FirstName.Length > 30)
+                    errors.Add("Imię nie może być dłuższe niż 30 znaków.");
+
+                if (string.IsNullOrWhiteSpace(EditedUser.LastName))
+                    errors.Add("Nazwisko jest wymagane.");
+                else if (EditedUser.LastName.Length > 30)
+                    errors.Add("Nazwisko nie może być dłuższe niż 30 znaków.");
+
+                if (string.IsNullOrWhiteSpace(EditedUser.Username))
+                    errors.Add("Login jest wymagany.");
+                else if (EditedUser.Username.Length > 30)
+                    errors.Add("Login nie może być dłuższy niż 30 znaków.");
+
+                if (string.IsNullOrWhiteSpace(EditedUser.Email))
+                    errors.Add("E-mail jest wymagany.");
+                else
                 {
-                    MessageBox.Show("Wszystkie pola są wymagane", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    if (EditedUser.Email.Length > 30)
+                        errors.Add("E-mail nie może być dłuższy niż 30 znaków.");
+                    if (!Regex.IsMatch(EditedUser.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+                        errors.Add("Nieprawidłowy adres e-mail.");
+                }
+
+                if (!string.IsNullOrWhiteSpace(Password) || !string.IsNullOrWhiteSpace(ConfirmPassword))
+                {
+                    if (string.IsNullOrWhiteSpace(Password))
+                        errors.Add("Hasło jest wymagane.");
+                    if (Password.Length < 6)
+                        errors.Add("Hasło musi mieć co najmniej 6 znaków.");
+                    if (!Regex.IsMatch(Password, @"[A-Z]"))
+                        errors.Add("Hasło musi zawierać co najmniej jedną dużą literę.");
+                    if (!Regex.IsMatch(Password, @"\d"))
+                        errors.Add("Hasło musi zawierać co najmniej jedną cyfrę.");
+                    if (!Regex.IsMatch(Password, @"[!@#$%^&*(),.?""{}|<>]"))
+                        errors.Add("Hasło musi zawierać co najmniej jeden znak specjalny.");
+                    if (Password != ConfirmPassword)
+                        errors.Add("Hasła się nie zgadzają.");
+                }
+
+                if (errors.Any())
+                {
+                    string message = string.Join("\n", errors);
+                    MessageBox.Show(message, "Błędy walidacji", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -154,36 +195,6 @@ namespace Filmweb.ViewModel
 
                 if (!string.IsNullOrWhiteSpace(Password) || !string.IsNullOrWhiteSpace(ConfirmPassword))
                 {
-                    if (Password.Length < 6)
-                    {
-                        MessageBox.Show("Hasło musi mieć co najmniej 6 znaków.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        return;
-                    }
-
-                    if (!Regex.IsMatch(Password, @"[A-Z]"))
-                    {
-                        MessageBox.Show("Hasło musi zawierać co najmniej jedną dużą literę.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        return;
-                    }
-
-                    if (!Regex.IsMatch(Password, @"\d"))
-                    {
-                        MessageBox.Show("Hasło musi zawierać co najmniej jedną cyfrę.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        return;
-                    }
-
-                    if (!Regex.IsMatch(Password, @"[!@#$%^&*(),.?""{}|<>]"))
-                    {
-                        MessageBox.Show("Hasło musi zawierać co najmniej jeden znak specjalny.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        return;
-                    }
-
-                    if (Password != ConfirmPassword)
-                    {
-                        MessageBox.Show("Hasła się nie zgadzają", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
-                        return;
-                    }
-
                     string updatePasswordQuery = @"UPDATE UZ_Login 
                                    SET Haslo = @Password, 
                                        LastModified = GETDATE()
