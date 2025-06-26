@@ -99,24 +99,39 @@ namespace Filmweb.ViewModel
                 connection.Open();
 
             string sql = @"
-                SELECT 
-                    F.Nazwa AS Title,
-                    F.Opis AS Description,
-                    (
-                        SELECT AVG(CAST(Ocena AS FLOAT))
-                        FROM opinie O
-                        WHERE O.ID_Filmu = F.ID_Filmu
-                    ) AS Rating,
-                    F.url AS ImageUrl,
-                    (
-                        SELECT DISTINCT G.Gatunek + ', '
-                        FROM Conn_Filmy_Gat C2
-                        JOIN Gatunek G ON G.ID_Gatunku = C2.ID_Gatunku
-                        WHERE C2.ID_Filmu = F.ID_Filmu
-                        FOR XML PATH(''), TYPE
-                    ).value('.', 'NVARCHAR(MAX)') AS Genres
-                FROM Filmy F
-                WHERE F.Nazwa = @title;";
+                        SELECT 
+                            F.Nazwa AS Title,
+                            F.Opis AS Description,
+                            (
+                                SELECT AVG(CAST(Ocena AS FLOAT))
+                                FROM opinie O
+                                WHERE O.ID_Filmu = F.ID_Filmu
+                            ) AS Rating,
+                            F.url AS ImageUrl,
+                            (
+                                SELECT DISTINCT G.Gatunek + ', '
+                                FROM Conn_Filmy_Gat C2
+                                JOIN Gatunek G ON G.ID_Gatunku = C2.ID_Gatunku
+                                WHERE C2.ID_Filmu = F.ID_Filmu
+                                FOR XML PATH(''), TYPE
+                            ).value('.', 'NVARCHAR(MAX)') AS Genres,
+                            (
+                                SELECT DISTINCT A.Imie + ' ' + A.Nazwisko + ', '
+                                FROM Con_Filmy_Osoby C
+                                JOIN Aktor A ON A.ID_Aktora = C.ID_Aktora
+                                WHERE C.ID_Filmu = F.ID_Filmu AND A.ID_Aktora IS NOT NULL
+                                FOR XML PATH(''), TYPE
+                            ).value('.', 'NVARCHAR(MAX)') AS Actors,
+                            (
+                                SELECT DISTINCT R.Imie + ' ' + R.Nazwisko + ', '
+                                FROM Con_Filmy_Osoby C
+                                JOIN Rezyser R ON R.ID_Rezysera = C.ID_Rezysera
+                                WHERE C.ID_Filmu = F.ID_Filmu AND R.ID_Rezysera IS NOT NULL
+                                FOR XML PATH(''), TYPE
+                            ).value('.', 'NVARCHAR(MAX)') AS Directors
+                        FROM Filmy F
+                        WHERE F.Nazwa = @title;";
+
 
             using (var cmd = new SqlCommand(sql, connection))
             {
@@ -133,10 +148,20 @@ namespace Filmweb.ViewModel
                             Rating = double.TryParse(reader["Rating"]?.ToString(), out var rating) ? rating : 0,
                             ImageUrl = reader["ImageUrl"].ToString(),
                             Genres = reader["Genres"]?.ToString()
-                                ?.Split(',')
-                                .Select(g => g.Trim())
-                                .Where(g => !string.IsNullOrWhiteSpace(g))
-                                .ToList(),
+                                     ?.Split(',')
+                                     .Select(g => g.Trim())
+                                     .Where(g => !string.IsNullOrWhiteSpace(g))
+                                     .ToList(),
+                            Actors = reader["Actors"]?.ToString()
+                                     ?.Split(',')
+                                     .Select(a => a.Trim())
+                                     .Where(a => !string.IsNullOrWhiteSpace(a))
+                                     .ToList(),
+                            Directors = reader["Directors"]?.ToString()
+                                     ?.Split(',')
+                                     .Select(d => d.Trim())
+                                     .Where(d => !string.IsNullOrWhiteSpace(d))
+                                     .ToList(),
                             Reviews = new List<ReviewM>()
                         };
                     }

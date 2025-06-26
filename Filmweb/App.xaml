@@ -8,5 +8,6 @@
         <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <local:NullToCollapsedGridLengthConverter x:Key="NullToCollapsedGridLengthConverter" />
         <local:NullToCollapsedVisibilityConverter x:Key="NullToCollapsedVisibilityConverter" />
+        <local:ListToCommaStringConverter x:Key="ListToCommaStringConverter"/>
     </Application.Resources>
 </Application>

@@ -8,6 +8,7 @@ namespace Filmweb.Model
 {
     public class ReviewM
     {
+        public string FilmName { get; set; }
         public string Content { get; set; }    
         public int Rating { get; set; }       
         public DateTime DateAdded { get; set; }

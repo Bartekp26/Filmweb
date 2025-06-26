@@ -1,6 +1,7 @@
 ﻿using Filmweb.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace Filmweb.ViewModel
         {
             _mainVM = mainVM;
             _mainVM.PropertyChanged += MainVM_PropertyChanged;
-
+            LoadUserReviews();
             LoadFavouriteMovies();
         }
 
@@ -59,6 +60,50 @@ namespace Filmweb.ViewModel
                 {
                     transaction.Rollback();
                     throw;
+                }
+            }
+        }
+
+        public ObservableCollection<ReviewM> UserReviews { get; } = new ObservableCollection<ReviewM>();
+
+        public void LoadUserReviews()
+        {
+            UserReviews.Clear();
+            var connection = DatabaseConnection.GetConnection();
+
+            if (connection.State == System.Data.ConnectionState.Closed)
+                connection.Open();
+
+            string sql = @"
+                        SELECT 
+                            F.Nazwa AS FilmName,
+                            R.Tresc AS Content,
+                            R.Ocena AS Rating,
+                            R.Data_dodania AS DateAdded
+                        FROM opinie R
+                        JOIN Filmy F ON R.ID_Filmu = F.ID_Filmu
+                        WHERE R.ID_Uzytkownika = (
+                            SELECT ID_Uzytkownika FROM UZ_Login WHERE Login = @Login
+                        )
+                        ORDER BY R.Data_dodania DESC;";
+
+            using (var cmd = new SqlCommand(sql, connection))
+            {
+                cmd.Parameters.AddWithValue("@Login", _mainVM.CurrentUser.Username);
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        UserReviews.Add(new ReviewM
+                        {
+                            FilmName = reader["FilmName"]?.ToString(),
+                            Content = reader["Content"]?.ToString(),
+                            Rating = reader["Rating"] != DBNull.Value ? Convert.ToInt32(reader["Rating"]) : 0,
+                            DateAdded = reader["DateAdded"] != DBNull.Value ? Convert.ToDateTime(reader["DateAdded"]) : DateTime.MinValue,
+                            Author = _mainVM.CurrentUser
+                        });
+                    }
                 }
             }
         }

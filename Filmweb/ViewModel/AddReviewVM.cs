@@ -109,7 +109,7 @@ namespace Filmweb.ViewModel
                 return false;
             }
 
-            if (Rating <= 0)
+            if (Rating <= 0 || Rating > 10)
             {
                 MessageBox.Show("Musisz wybrać ocenę (od 1 do 10).", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
