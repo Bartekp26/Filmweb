@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -27,6 +28,29 @@ namespace Filmweb.ViewModel
                 OnPropertyChanged();
             }
         }
+
+        private string _password;
+        public string Password
+        {
+            get => _password;
+            set
+            {
+                _password = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private string _confirmPassword;
+        public string ConfirmPassword
+        {
+            get => _confirmPassword;
+            set
+            {
+                _confirmPassword = value;
+                OnPropertyChanged();
+            }
+        }
+        public Action OnPasswordChangeSucceeded { get; set; }
 
         public ICommand SaveCommand { get; }
         public ICommand NavigateToProfileCommand => _mainVM.NavigateToProfileCommand;
@@ -117,16 +141,58 @@ namespace Filmweb.ViewModel
                 loginCommand.ExecuteNonQuery();
 
                 string userQuery = @"UPDATE UZ_Dane 
-                             SET Imie = @FirstName, 
+                                 SET Imie = @FirstName, 
                                  Nazwisko = @LastName, 
                                  Email = @Email 
-                             WHERE ID_Uzytkownika = @UserId";
+                                 WHERE ID_Uzytkownika = @UserId";
                 SqlCommand userCommand = new SqlCommand(userQuery, connection);
                 userCommand.Parameters.AddWithValue("@FirstName", EditedUser.FirstName);
                 userCommand.Parameters.AddWithValue("@LastName", EditedUser.LastName);
                 userCommand.Parameters.AddWithValue("@Email", EditedUser.Email);
                 userCommand.Parameters.AddWithValue("@UserId", userId);
                 userCommand.ExecuteNonQuery();
+
+                if (!string.IsNullOrWhiteSpace(Password) || !string.IsNullOrWhiteSpace(ConfirmPassword))
+                {
+                    if (Password.Length < 6)
+                    {
+                        MessageBox.Show("Hasło musi mieć co najmniej 6 znaków.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    if (!Regex.IsMatch(Password, @"[A-Z]"))
+                    {
+                        MessageBox.Show("Hasło musi zawierać co najmniej jedną dużą literę.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    if (!Regex.IsMatch(Password, @"\d"))
+                    {
+                        MessageBox.Show("Hasło musi zawierać co najmniej jedną cyfrę.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    if (!Regex.IsMatch(Password, @"[!@#$%^&*(),.?""{}|<>]"))
+                    {
+                        MessageBox.Show("Hasło musi zawierać co najmniej jeden znak specjalny.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    if (Password != ConfirmPassword)
+                    {
+                        MessageBox.Show("Hasła się nie zgadzają", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    string updatePasswordQuery = @"UPDATE UZ_Login 
+                                   SET Haslo = @Password, 
+                                       LastModified = GETDATE()
+                                   WHERE ID_Uzytkownika = @UserId";
+                    SqlCommand passwordCommand = new SqlCommand(updatePasswordQuery, connection);
+                    passwordCommand.Parameters.AddWithValue("@Password", BCrypt.Net.BCrypt.HashPassword(Password));
+                    passwordCommand.Parameters.AddWithValue("@UserId", userId);
+                    passwordCommand.ExecuteNonQuery();
+                }
 
                 _mainVM.CurrentUser = new UserM
                 {
@@ -139,6 +205,7 @@ namespace Filmweb.ViewModel
                 };
 
                 MessageBox.Show("Dane zostały zapisane", "Sukces", MessageBoxButton.OK, MessageBoxImage.Information);
+                OnPasswordChangeSucceeded?.Invoke();
                 _mainVM.NavigateToProfileCommand.Execute(null);
             }
             catch (SqlException ex)

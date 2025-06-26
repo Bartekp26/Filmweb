@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Filmweb.View"
              mc:Ignorable="d" 
-             d:DesignHeight="560" d:DesignWidth="1000" Background="Black">
+             d:DesignHeight="560" d:DesignWidth="1000" Background="Black"
+             Loaded="UserControl_Loaded">
     <Grid Margin="20">
 
         <Grid Grid.Row="0">
@@ -22,25 +23,35 @@
                     FontSize="50"
                     Margin="0,0,10,0"/>
                     <TextBox Text="{Binding EditedUser.Username, UpdateSourceTrigger=PropertyChanged}"
-                    Width="250" Margin="40,0,0,0" FontSize="16" Height="25"/>
+                    Width="250" Margin="70,0,0,0" FontSize="16" Height="25"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                     <TextBlock Text="Imię:" Foreground="White" FontWeight="Bold" FontSize="18"/>
                     <TextBox Text="{Binding EditedUser.FirstName, UpdateSourceTrigger=PropertyChanged}"
-                    Width="250" Margin="58,0,0,0" FontSize="16"/>
+                    Width="250" Margin="88,0,0,0" FontSize="16"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
                     <TextBlock Text="Nazwisko:" Foreground="White" FontWeight="Bold" FontSize="18"/>
                     <TextBox Text="{Binding EditedUser.LastName, UpdateSourceTrigger=PropertyChanged}"
-                    Width="250" Margin="14,0,0,0" FontSize="16"/>
+                    Width="250" Margin="44,0,0,0" FontSize="16"/>
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                     <TextBlock Text="Mail:" Foreground="White" FontWeight="Bold" FontSize="18"/>
                     <TextBox Text="{Binding EditedUser.Email, UpdateSourceTrigger=PropertyChanged}"
-                    Width="250" Margin="58,0,0,0" FontSize="16"/>
+                    Width="250" Margin="88,0,0,0" FontSize="16"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                    <TextBlock Text="Hasło:" Foreground="White" FontWeight="Bold" FontSize="18"/>
+                    <PasswordBox x:Name="PasswordBox" Width="250" Margin="76,0,0,0" FontSize="16"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Powtórz hasło:" Foreground="White" FontWeight="Bold" FontSize="18"/>
+                    <PasswordBox x:Name="ConfirmPasswordBox" Width="250" Margin="4,0,0,0" FontSize="16"/>
                 </StackPanel>
 
                 <Rectangle HorizontalAlignment="Left" Height="2" Width="350" Fill="Orange" Margin="0,0,0,10"/>

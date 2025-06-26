@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Filmweb.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,20 @@ namespace Filmweb.View
         public EditProfileView()
         {
             InitializeComponent();
+        }
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is EditProfileVM vm)
+            {
+                PasswordBox.PasswordChanged += (s, args) => vm.Password = PasswordBox.Password;
+                ConfirmPasswordBox.PasswordChanged += (s, args) => vm.ConfirmPassword = ConfirmPasswordBox.Password;
+
+                vm.OnPasswordChangeSucceeded = () =>
+                {
+                    PasswordBox.Password = string.Empty;
+                    ConfirmPasswordBox.Password = string.Empty;
+                };
+            }
         }
     }
 }
