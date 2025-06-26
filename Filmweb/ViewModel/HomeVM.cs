@@ -53,15 +53,18 @@ namespace Filmweb.ViewModel
                 OnPropertyChanged(nameof(SearchBoxForeground));
             }
         }
-
-        public HomeVM(MainVM mainVM)
+        public void InitializeMovies()
         {
-            _mainVM = mainVM;
             LoadAllMovies();
             _filteredMovies = AllMovies.ToList();
             LoadGenresFromDatabase();
             FilterPagedMovies();
             SearchText = Placeholder;
+        }
+
+        public HomeVM(MainVM mainVM)
+        {
+            _mainVM = mainVM;
         }
 
         private void LoadAllMovies()
@@ -73,45 +76,62 @@ namespace Filmweb.ViewModel
                 connection.Open();
 
             string sql = @"
-                SELECT 
-                    F.ID_Filmu,
-                    F.Nazwa AS Title,
-                    F.Opis AS Description,
-                    F.Ocena AS Rating,
-                    F.url AS ImageUrl,
-                    (
-                        SELECT DISTINCT G.Gatunek + ', '
-                        FROM Conn_Filmy_Gat C2
-                        JOIN Gatunek G ON G.ID_Gatunku = C2.ID_Gatunku
-                        WHERE C2.ID_Filmu = F.ID_Filmu
-                        FOR XML PATH(''), TYPE
-                    ).value('.', 'NVARCHAR(MAX)') AS Genres
-                FROM Filmy F
-                ORDER BY F.ID_Filmu;";
+                        SELECT 
+                            F.ID_Filmu,
+                            F.Nazwa AS Title,
+                            F.Opis AS Description,
+                            F.Ocena AS Rating,
+                            F.url AS ImageUrl,
+                            (
+                                SELECT DISTINCT G.Gatunek + ', '
+                                FROM Conn_Filmy_Gat C2
+                                JOIN Gatunek G ON G.ID_Gatunku = C2.ID_Gatunku
+                                WHERE C2.ID_Filmu = F.ID_Filmu
+                                FOR XML PATH(''), TYPE
+                            ).value('.', 'NVARCHAR(MAX)') AS Genres,
+                            (
+                                SELECT TOP 1 O.Ocena
+                                FROM opinie O
+                                WHERE O.ID_Filmu = F.ID_Filmu
+                                  AND O.ID_Uzytkownika = (
+                                      SELECT ID_Uzytkownika
+                                      FROM UZ_Login
+                                      WHERE Login = @Login
+                                  )
+                                ORDER BY O.Data_dodania DESC
+                            ) AS UserRating
+                        FROM Filmy F
+                        ORDER BY F.ID_Filmu;";
 
             using (var cmd = new SqlCommand(sql, connection))
-            using (var reader = cmd.ExecuteReader())
             {
-                while (reader.Read())
+                cmd.Parameters.AddWithValue("@Login", _mainVM.CurrentUser.Username);
+
+                using (var reader = cmd.ExecuteReader())
                 {
-                    movies.Add(new MovieListItemM
+                    while (reader.Read())
                     {
-                        Title = reader["Title"].ToString(),
-                        Description = reader["Description"].ToString(),
-                        Rating = Convert.ToDouble(reader["Rating"]),
-                        ImageUrl = reader["ImageUrl"].ToString(),
-                        GenreList = reader["Genres"]?.ToString()
-                            ?.Split(',')
-                            .Select(g => g.Trim())
-                            .Where(g => !string.IsNullOrWhiteSpace(g))
-                            .ToList()
-                    });
+                        movies.Add(new MovieListItemM
+                        {
+                            Title = reader["Title"].ToString(),
+                            Description = reader["Description"].ToString(),
+                            Rating = Convert.ToDouble(reader["Rating"]),
+                            ImageUrl = reader["ImageUrl"].ToString(),
+                            UserRating = reader["UserRating"] != DBNull.Value ? (double?)Convert.ToDouble(reader["UserRating"]) : null,
+                            GenreList = reader["Genres"]?.ToString()
+                                ?.Split(',')
+                                .Select(g => g.Trim())
+                                .Where(g => !string.IsNullOrWhiteSpace(g))
+                                .ToList()
+                        });
+                    }
                 }
             }
 
             foreach (var movie in movies)
                 AllMovies.Add(movie);
         }
+
 
         private void LoadGenresFromDatabase()
         {
@@ -174,7 +194,24 @@ namespace Filmweb.ViewModel
             OnPropertyChanged(nameof(CanGoToPrevious));
             OnPropertyChanged(nameof(CanGoToNext));
         }
+        public void RefreshUserRating(string title, double rating, double newRating)
+        {
+            var movie = AllMovies.FirstOrDefault(m => m.Title.Trim().Equals(title.Trim(), StringComparison.OrdinalIgnoreCase));
+            if (movie != null)
+            {
+                movie.UserRating = rating;
+                movie.Rating = newRating;
 
+                var paged = PagedMovies.FirstOrDefault(m => m.Title.Trim().Equals(title.Trim(), StringComparison.OrdinalIgnoreCase));
+                if (paged != null)
+                {
+                    var index = PagedMovies.IndexOf(paged);
+                    PagedMovies.RemoveAt(index);
+                    PagedMovies.Insert(index, movie);
+                }
+            }
+        }
+        
         public void GoToNextPage()
         {
             if (CanGoToNext)

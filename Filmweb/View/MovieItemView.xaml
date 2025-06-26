@@ -33,7 +33,7 @@
  
             <Image Grid.Row="0" Grid.Column="0"
                    Source="{Binding ImageUrl}"
-                   Width="80" Height="110"
+                   Width="80" Height="60"
                    Stretch="UniformToFill"
                    Margin="0,0,10,0"
                    VerticalAlignment="Top"/>

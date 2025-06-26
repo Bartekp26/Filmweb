@@ -49,11 +49,12 @@ namespace Filmweb.ViewModel
         private readonly LoginView _loginView;
         private readonly RegisterView _registerView;
         private readonly HomeView _homeView;
-        private readonly ProfileView _profileView;
         private readonly EditProfileView _editprofileView;
         private RegisterVM _registerVM;
         private EditProfileVM _editProfileVM;
         private AddReviewVM _addReviewVM;
+        public HomeVM HomeVM { get; private set; }
+        public MovieDetailsVM MovieDetailsVM { get; private set; }
 
         private UserM _currentUser;
         public UserM CurrentUser
@@ -75,12 +76,13 @@ namespace Filmweb.ViewModel
             _editProfileVM = new EditProfileVM(this);
             var loginVM = new LoginVM(this);
             var registerVM = new RegisterVM(this);
-            var homeVM = new HomeVM(this);
+            HomeVM = new HomeVM(this);
             var editprofileVM = new EditProfileVM(this);
+           
 
             _loginView = new LoginView { DataContext = loginVM };
             _registerView = new RegisterView { DataContext = registerVM };
-            _homeView = new HomeView { DataContext = homeVM };
+            _homeView = new HomeView { DataContext = HomeVM };
             _editprofileView = new EditProfileView { DataContext = _editProfileVM };
 
             SwitchToRegisterCommand = new RelayCommand(_ => CurrentView = _registerView, p => true);
@@ -124,13 +126,14 @@ namespace Filmweb.ViewModel
             CurrentUser = user;
             _editProfileVM.editUser(CurrentUser);
             loginVM.ClearAllFields(() => (_loginView as LoginView)?.ClearPasswordBox());
+            HomeVM.InitializeMovies();
             CurrentView = _homeView;
         }
 
         public void NavigateToMovieDetails(string title)
         {
-            var vm = new MovieDetailsVM(title, this);
-            var view = new MovieDetailsView { DataContext = vm };
+            MovieDetailsVM = new MovieDetailsVM(title, this); 
+            var view = new MovieDetailsView { DataContext = MovieDetailsVM };
             CurrentView = view;
         }
         public void ExecuteRegister()

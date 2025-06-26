@@ -1,27 +1,39 @@
-﻿using Filmweb.Model;
-using Filmweb.ViewModel.BaseClass;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
+using Filmweb.Model;
+using Filmweb.ViewModel.BaseClass;
 
 namespace Filmweb.ViewModel
 {
-
     public class MovieDetailsVM : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
         private readonly MainVM _mainVM;
-        public ICommand AddReviewCommand => _mainVM.AddReviewCommand;
 
-        public MovieM Movie { get; private set; }
+        private MovieM _movie;
+        public MovieM Movie
+        {
+            get => _movie;
+            set
+            {
+                if (_movie != value)
+                {
+                    _movie = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(Title));
+                    OnPropertyChanged(nameof(Description));
+                    OnPropertyChanged(nameof(GenresAsText));
+                    OnPropertyChanged(nameof(HasUserReview));
+                    OnPropertyChanged(nameof(ReviewButtonText));
+                }
+            }
+        }
 
         public string Title => Movie?.Title;
         public string Description => Movie?.Description;
@@ -34,11 +46,12 @@ namespace Filmweb.ViewModel
             set
             {
                 _isImageVisible = value;
-                OnPropertyChanged(nameof(IsImageVisible));
+                OnPropertyChanged();
             }
         }
 
-        public string HeartIcon => IsFavourite ? "\uEB52" : "\uEB51";
+        public bool HasUserReview => Movie?.Reviews.Any(r => r.Author.Username == _mainVM.CurrentUser.Username) == true;
+        public string ReviewButtonText => HasUserReview ? "Edytuj opinię" : "Dodaj opinię";
 
         private bool _isFavourite;
         public bool IsFavourite
@@ -50,130 +63,60 @@ namespace Filmweb.ViewModel
                 {
                     _isFavourite = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(HeartIcon));
                 }
             }
         }
 
+        public string HeartIcon => IsFavourite ? "\uEB52" : "\uEB51";
+
+        public ICommand AddReviewCommand => _mainVM.AddReviewCommand;
         public ICommand ToggleFavouriteCommand { get; }
 
         public MovieDetailsVM(string title, MainVM mainVM)
         {
             _mainVM = mainVM;
+            ToggleFavouriteCommand = new RelayCommand(_ => ToggleFavourite(), p => true);
             LoadMovieFromDatabase(title);
             LoadMovieReviews(title);
             LoadIsFavourite();
-
-            ToggleFavouriteCommand = new RelayCommand(_ => ToggleFavourite(), p => true);
-            OnPropertyChanged(nameof(IsFavourite));
-            OnPropertyChanged(nameof(HeartIcon));
         }
 
-        private void ToggleFavourite()
+        public void Reload()
         {
-            SqlConnection connection = DatabaseConnection.GetConnection();
-            using (SqlTransaction transaction = connection.BeginTransaction())
-            {
-                try
-                {
-                    string query;
+            var t = Movie?.Title;
+            Movie = null;
 
-                    if (IsFavourite)
-                    {
-                        query = @"
-                            DELETE FROM Fav_Filmy
-                            WHERE ID_Uzytkownika = (SELECT ID_Uzytkownika FROM UZ_Login WHERE Login = @Login)
-                            AND ID_Filmu = (SELECT ID_Filmu FROM Filmy WHERE Nazwa = @Title)";
-                    }
-                    else
-                    {
-                        query = @"
-                            INSERT INTO Fav_Filmy (ID_Filmu, ID_Uzytkownika)
-                            VALUES (
-                                (SELECT ID_Filmu FROM Filmy WHERE Nazwa = @Title),
-                                (SELECT ID_Uzytkownika FROM UZ_Login WHERE Login = @Login)
-                            )";
-                    }
-
-                    using (SqlCommand command = new SqlCommand(query, connection, transaction))
-                    {
-                        command.Parameters.AddWithValue("@Login", _mainVM.CurrentUser.Username);
-                        command.Parameters.AddWithValue("@Title", Movie.Title);
-                        command.ExecuteNonQuery();
-                    }
-
-                    transaction.Commit();
-                }
-                catch
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
-
+            LoadMovieFromDatabase(t);
+            LoadMovieReviews(t);
             LoadIsFavourite();
-        }
-
-        public void LoadIsFavourite()
-        {
-            SqlConnection connection = DatabaseConnection.GetConnection();
-            using (SqlTransaction transaction = connection.BeginTransaction())
-            {
-                try
-                {
-                    string query = @"
-                            SELECT ISNULL((
-                                SELECT 1
-                                FROM Fav_Filmy FF
-                                INNER JOIN Filmy F ON F.ID_Filmu = FF.ID_Filmu
-                                WHERE FF.ID_Uzytkownika = (
-                                    SELECT ID_Uzytkownika FROM UZ_Login WHERE Login = @Login
-                                )
-                                AND F.Nazwa = @Title
-                            ), 0);";
-
-                    using (SqlCommand command = new SqlCommand(query, connection, transaction))
-                    {
-                        command.Parameters.AddWithValue("@Login", _mainVM.CurrentUser.Username);
-                        command.Parameters.AddWithValue("@Title", Movie.Title);
-
-                        var result = command.ExecuteScalar();
-                        IsFavourite = (result != null && Convert.ToInt32(result) == 1);
-                    }
-
-                    transaction.Commit();
-                }
-                catch
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-            }
-            OnPropertyChanged(nameof(IsFavourite));
-            OnPropertyChanged(nameof(HeartIcon));
         }
 
         private void LoadMovieFromDatabase(string title)
         {
             var connection = DatabaseConnection.GetConnection();
-
             if (connection.State == System.Data.ConnectionState.Closed)
                 connection.Open();
 
             string sql = @"
-                        SELECT 
-                            F.Nazwa AS Title,
-                            F.Opis AS Description,
-                            F.Ocena AS Rating,
-                            F.url AS ImageUrl,
-                            (
-                                SELECT DISTINCT G.Gatunek + ', '
-                                FROM Conn_Filmy_Gat C2
-                                JOIN Gatunek G ON G.ID_Gatunku = C2.ID_Gatunku
-                                WHERE C2.ID_Filmu = F.ID_Filmu
-                                FOR XML PATH(''), TYPE
-                            ).value('.', 'NVARCHAR(MAX)') AS Genres
-                        FROM Filmy F
-                        WHERE F.Nazwa = @title;";
+                SELECT 
+                    F.Nazwa AS Title,
+                    F.Opis AS Description,
+                    (
+                        SELECT AVG(CAST(Ocena AS FLOAT))
+                        FROM opinie O
+                        WHERE O.ID_Filmu = F.ID_Filmu
+                    ) AS Rating,
+                    F.url AS ImageUrl,
+                    (
+                        SELECT DISTINCT G.Gatunek + ', '
+                        FROM Conn_Filmy_Gat C2
+                        JOIN Gatunek G ON G.ID_Gatunku = C2.ID_Gatunku
+                        WHERE C2.ID_Filmu = F.ID_Filmu
+                        FOR XML PATH(''), TYPE
+                    ).value('.', 'NVARCHAR(MAX)') AS Genres
+                FROM Filmy F
+                WHERE F.Nazwa = @title;";
 
             using (var cmd = new SqlCommand(sql, connection))
             {
@@ -204,23 +147,22 @@ namespace Filmweb.ViewModel
         private void LoadMovieReviews(string title)
         {
             var connection = DatabaseConnection.GetConnection();
-
             if (connection.State == System.Data.ConnectionState.Closed)
                 connection.Open();
 
             string sql = @"
-                        SELECT 
-                            R.Tresc as Content,
-                            R.Ocena as Rating,
-                            R.Data_dodania as DateAdded,
-                            (
-                                SELECT L.Login
-                                FROM UZ_Login L
-                                WHERE L.ID_Uzytkownika=R.ID_Uzytkownika
-                            ) as Author
-                        FROM Filmy F
-                        LEFT JOIN opinie R ON F.ID_Filmu=R.ID_Filmu
-                        WHERE F.Nazwa = @title;";
+                SELECT 
+                    R.Tresc as Content,
+                    R.Ocena as Rating,
+                    R.Data_dodania as DateAdded,
+                    (
+                        SELECT L.Login
+                        FROM UZ_Login L
+                        WHERE L.ID_Uzytkownika=R.ID_Uzytkownika
+                    ) as Author
+                FROM Filmy F
+                LEFT JOIN opinie R ON F.ID_Filmu=R.ID_Filmu
+                WHERE F.Nazwa = @title;";
 
             using (var cmd = new SqlCommand(sql, connection))
             {
@@ -228,6 +170,7 @@ namespace Filmweb.ViewModel
 
                 using (var reader = cmd.ExecuteReader())
                 {
+                    Movie.Reviews = new List<ReviewM>();
                     while (reader.Read())
                     {
                         if (reader["Content"] != DBNull.Value)
@@ -248,12 +191,92 @@ namespace Filmweb.ViewModel
                     }
                 }
             }
+
+            OnPropertyChanged(nameof(HasUserReview));
+            OnPropertyChanged(nameof(ReviewButtonText));
         }
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void ToggleFavourite()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            SqlConnection connection = DatabaseConnection.GetConnection();
+            using (SqlTransaction transaction = connection.BeginTransaction())
+            {
+                try
+                {
+                    string query;
+
+                    if (IsFavourite)
+                    {
+                        query = @"
+                     DELETE FROM Fav_Filmy
+                     WHERE ID_Uzytkownika = (SELECT ID_Uzytkownika FROM UZ_Login WHERE Login = @Login)
+                     AND ID_Filmu = (SELECT ID_Filmu FROM Filmy WHERE Nazwa = @Title)";
+                    }
+                    else
+                    {
+                        query = @"
+                     INSERT INTO Fav_Filmy (ID_Filmu, ID_Uzytkownika)
+                     VALUES (
+                         (SELECT ID_Filmu FROM Filmy WHERE Nazwa = @Title),
+                         (SELECT ID_Uzytkownika FROM UZ_Login WHERE Login = @Login)
+                     )";
+                    }
+
+                    using (SqlCommand command = new SqlCommand(query, connection, transaction))
+                    {
+                        command.Parameters.AddWithValue("@Login", _mainVM.CurrentUser.Username);
+                        command.Parameters.AddWithValue("@Title", Movie.Title);
+                        command.ExecuteNonQuery();
+                    }
+
+                    transaction.Commit();
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+
+            LoadIsFavourite();
         }
+        private void LoadIsFavourite()
+        {
+            var connection = DatabaseConnection.GetConnection();
+            using (var transaction = connection.BeginTransaction())
+            {
+                try
+                {
+                    string query = @"
+                        SELECT ISNULL((
+                            SELECT 1
+                            FROM Fav_Filmy FF
+                            INNER JOIN Filmy F ON F.ID_Filmu = FF.ID_Filmu
+                            WHERE FF.ID_Uzytkownika = (
+                                SELECT ID_Uzytkownika FROM UZ_Login WHERE Login = @Login
+                            )
+                            AND F.Nazwa = @Title
+                        ), 0);";
+
+                    using (var cmd = new SqlCommand(query, connection, transaction))
+                    {
+                        cmd.Parameters.AddWithValue("@Login", _mainVM.CurrentUser.Username);
+                        cmd.Parameters.AddWithValue("@Title", Movie.Title);
+                        var result = cmd.ExecuteScalar();
+                        IsFavourite = (result != null && Convert.ToInt32(result) == 1);
+                    }
+
+                    transaction.Commit();
+                }
+                catch
+                {
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+        }
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
-

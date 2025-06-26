@@ -71,6 +71,7 @@
                                    VerticalAlignment="Top"
                                    HorizontalAlignment="Right"
                                    Margin="10,5,0,0"/>
+                        <TextBlock Text="{Binding Movie.Rating}" Foreground="Red" />
                     </Grid>
 
                     <TextBlock Text="{Binding GenresAsText}"
@@ -102,7 +103,7 @@
                 <Rectangle HorizontalAlignment="Left" Height="2" Width="300" Fill="Orange" Margin="0,5,0,0"/>
             </StackPanel>
 
-            <Button Content="Dodaj opinię"
+            <Button Content="{Binding ReviewButtonText}"
             Width="140"
             Height="35"
             Margin="10,5,0,0"

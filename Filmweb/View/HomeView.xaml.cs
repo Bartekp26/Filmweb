@@ -21,7 +21,6 @@ namespace Filmweb.View
     /// </summary>
     public partial class HomeView : UserControl
     {
-        private readonly string PlaceholderText = "Wyszukaj...";
 
         public HomeView()
         {
