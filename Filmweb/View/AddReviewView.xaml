@@ -17,7 +17,7 @@
                        Margin="0,0,0,20"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="-5,5,0,10">
-                <Label Content="Ocena (0-10):" Foreground="White" VerticalAlignment="Center" Width="100"/>
+                <Label Content="Ocena (1-10):" Foreground="White" VerticalAlignment="Center" Width="100"/>
 
                 <xctk:IntegerUpDown
                         Value="{Binding Rating}"
@@ -30,7 +30,7 @@
                         ValueChanged="IntegerUpDown_ValueChanged"/>
             </StackPanel>
 
-            <TextBlock Text="Treść opinii:" Foreground="White"/>
+            <TextBlock Text="Treść opinii (limit 300 znaków):" Foreground="White"/>
             <TextBox Text="{Binding Content}" AcceptsReturn="True" Height="150" TextWrapping="Wrap" Margin="0,5,0,20"/>
 
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

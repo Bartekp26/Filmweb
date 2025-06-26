@@ -34,7 +34,7 @@ namespace Filmweb.ViewModel
             }
         }
 
-        private double _rating;
+        private double _rating = 1;
         public double Rating
         {
             get => _rating;
@@ -106,6 +106,11 @@ namespace Filmweb.ViewModel
             if (string.IsNullOrWhiteSpace(Content))
             {
                 MessageBox.Show("Treść opinii nie może być pusta.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+            if (Content.Length > 300)
+            {
+                MessageBox.Show("Treść opinii przekracza limit 300 znaków.", "Błąd", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
 
