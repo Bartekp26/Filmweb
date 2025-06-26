@@ -158,8 +158,8 @@ namespace Filmweb.ViewModel
                 errors.Add("E-mail jest wymagany.");
             else
             {
-                if (Email.Length > 30)
-                    errors.Add("E-mail nie może być dłuższy niż 30 znaków.");
+                if (Email.Length > 50)
+                    errors.Add("E-mail nie może być dłuższy niż 50 znaków.");
                 if (!Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
                     errors.Add("Nieprawidłowy adres e-mail.");
                 else if (IsEmailInDatabase(Email))
