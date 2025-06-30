@@ -86,7 +86,6 @@ namespace Filmweb.ViewModel
                                 FROM opinie O
                                 WHERE O.ID_Filmu = F.ID_Filmu
                             ) AS Rating,
-                            F.url AS ImageUrl,
                             (
                                 SELECT DISTINCT G.Gatunek + ', '
                                 FROM Conn_Filmy_Gat C2
@@ -121,7 +120,7 @@ namespace Filmweb.ViewModel
                             Title = reader["Title"].ToString(),
                             Description = reader["Description"].ToString(),
                             Rating = reader["Rating"] != DBNull.Value ? Convert.ToDouble(reader["Rating"]) : 0,
-                            ImageUrl = reader["ImageUrl"].ToString(),
+                            // ImageUrl = reader["ImageUrl"].ToString(),
                             UserRating = reader["UserRating"] != DBNull.Value ? (double?)Convert.ToDouble(reader["UserRating"]) : null,
                             GenreList = reader["Genres"]?.ToString()
                                 ?.Split(',')
